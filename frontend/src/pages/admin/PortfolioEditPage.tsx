@@ -6,7 +6,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,6 +19,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { adminApi } from '../../api/admin';
 import { ApiError } from '../../api/client';
 import { useAuth } from '../../auth/AuthContext';
+import { FormSkeleton } from '../../components/admin/Skeletons';
 import type { Category, PortfolioImage, PortfolioPayload } from '../../api/types';
 import { palette } from '../../theme';
 
@@ -201,13 +201,7 @@ export default function PortfolioEditPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <Box sx={{ display: 'grid', placeItems: 'center', py: 12 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (loading) return <FormSkeleton />;
 
   return (
     <Box component="form" onSubmit={onSubmit}>
@@ -334,7 +328,7 @@ export default function PortfolioEditPage() {
             <Button
               variant="outlined"
               fullWidth
-              startIcon={uploadingCover ? <CircularProgress size={16} color="inherit" /> : <CloudUploadOutlinedIcon />}
+              startIcon={<CloudUploadOutlinedIcon />}
               onClick={() => coverInputRef.current?.click()}
               disabled={uploadingCover}
             >
@@ -359,7 +353,7 @@ export default function PortfolioEditPage() {
                 <Button
                   variant="outlined"
                   fullWidth
-                  startIcon={uploadingGallery ? <CircularProgress size={16} color="inherit" /> : <CloudUploadOutlinedIcon />}
+                  startIcon={<CloudUploadOutlinedIcon />}
                   onClick={() => galleryInputRef.current?.click()}
                   disabled={uploadingGallery}
                   sx={{ mb: 3 }}

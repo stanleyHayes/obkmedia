@@ -9,6 +9,7 @@ import { errorHandler, notFoundHandler } from './middleware/errors.js';
 import { adminAuthRouter } from './routes/adminAuth.js';
 import { adminCategoriesRouter } from './routes/adminCategories.js';
 import { adminMessagesRouter } from './routes/adminMessages.js';
+import { adminNotificationsRouter } from './routes/adminNotifications.js';
 import { adminPortfolioRouter } from './routes/adminPortfolio.js';
 import { adminRolesRouter } from './routes/adminRoles.js';
 import { adminStatsRouter } from './routes/adminStats.js';
@@ -50,6 +51,7 @@ export function createApp(): express.Express {
   app.use('/api/admin/portfolio', requireAuth, adminPortfolioRouter);
   app.use('/api/admin/categories', requireAuth, adminCategoriesRouter);
   app.use('/api/admin/contact-messages', requireAuth, adminMessagesRouter);
+  app.use('/api/admin/notifications', requireAuth, adminNotificationsRouter);
   app.use('/api/admin/stats', requireAuth, adminStatsRouter);
   app.use('/api/admin/users', requireAuth, adminUsersRouter);
   app.use('/api/admin/roles', requireAuth, adminRolesRouter);

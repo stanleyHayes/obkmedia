@@ -1,7 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
+import { NotificationsProvider } from './admin/NotificationsContext';
 import { AuthProvider } from './auth/AuthContext';
 import RequirePermission from './auth/RequirePermission';
 import AdminLayout from './layouts/AdminLayout';
+import AdminNotFoundPage from './pages/admin/AdminNotFoundPage';
 import CategoriesPage from './pages/admin/CategoriesPage';
 import DashboardPage from './pages/admin/DashboardPage';
 import LoginPage from './pages/admin/LoginPage';
@@ -16,7 +18,8 @@ import UsersPage from './pages/admin/UsersPage';
 export default function AdminApp() {
   return (
     <AuthProvider>
-      <Routes>
+      <NotificationsProvider>
+        <Routes>
         <Route path="login" element={<LoginPage />} />
         <Route element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
@@ -77,8 +80,10 @@ export default function AdminApp() {
             }
           />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="*" element={<AdminNotFoundPage />} />
         </Route>
-      </Routes>
+        </Routes>
+      </NotificationsProvider>
     </AuthProvider>
   );
 }

@@ -5,6 +5,7 @@ import type {
   AdminUser,
   Category,
   ContactMessage,
+  NotificationItem,
   Permission,
   Portfolio,
   PortfolioImage,
@@ -52,6 +53,10 @@ export const adminApi = {
 
   // stats
   stats: () => api.get<{ stats: AdminStats; recentMessages: ContactMessage[] }>('/api/admin/stats'),
+
+  // notifications (unread messages feed for the bell)
+  notifications: () =>
+    api.get<{ count: number; items: NotificationItem[] }>('/api/admin/notifications'),
 
   // portfolio
   listPortfolio: () => api.get<{ items: Portfolio[] }>('/api/admin/portfolio'),

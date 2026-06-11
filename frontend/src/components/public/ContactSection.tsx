@@ -13,6 +13,7 @@ import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
 import ContactForm from './ContactForm';
+import SectionDecor from './SectionDecor';
 
 const DETAILS = [
   { icon: <EmailOutlinedIcon />, label: BRAND.email, href: `mailto:${BRAND.email}` },
@@ -23,8 +24,11 @@ const DETAILS = [
 
 export default function ContactSection() {
   return (
-    <Box component="section" id="contact" sx={{ py: { xs: 10, md: 16 }, bgcolor: palette.inkRaised }}>
-      <Container maxWidth="xl">
+    <Box component="section" id="contact" sx={{ py: { xs: 10, md: 16 }, bgcolor: palette.inkRaised, position: 'relative', overflow: 'hidden' }}>
+      <SectionDecor sx={{ right: { xs: -50, md: 30 }, bottom: 10 }}>
+        <EmailOutlinedIcon sx={{ fontSize: { xs: 220, md: 340 } }} />
+      </SectionDecor>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '4fr 7fr' }, gap: { xs: 6, md: 10 } }}>
           <Box>
             <Reveal>

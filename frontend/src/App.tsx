@@ -1,7 +1,6 @@
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import SplashScreen from './components/SplashScreen';
 import PublicLayout from './layouts/PublicLayout';
 import HomePage from './pages/HomePage';
 import LegalPage from './pages/LegalPage';
@@ -14,14 +13,6 @@ import PortfolioPage from './pages/PortfolioPage';
  * public marketing site never ships any admin code to visitors.
  */
 const AdminApp = lazy(() => import('./AdminApp'));
-
-function AdminFallback() {
-  return (
-    <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
-      <CircularProgress color="primary" />
-    </Box>
-  );
-}
 
 export default function App() {
   return (
@@ -37,7 +28,7 @@ export default function App() {
       <Route
         path="admin/*"
         element={
-          <Suspense fallback={<AdminFallback />}>
+          <Suspense fallback={<SplashScreen />}>
             <AdminApp />
           </Suspense>
         }

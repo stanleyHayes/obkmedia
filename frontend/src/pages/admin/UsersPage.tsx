@@ -6,7 +6,6 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -23,6 +22,7 @@ import { adminApi } from '../../api/admin';
 import { ApiError } from '../../api/client';
 import type { AdminUser, Role } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
+import { ListSkeleton } from '../../components/admin/Skeletons';
 import { palette } from '../../theme';
 
 interface UserFormState {
@@ -184,13 +184,7 @@ export default function UsersPage() {
   };
 
   if (error) return <Alert severity="error">Couldn’t load users — refresh to try again.</Alert>;
-  if (items === null) {
-    return (
-      <Box sx={{ display: 'grid', placeItems: 'center', py: 12 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (items === null) return <ListSkeleton rows={3} />;
 
   return (
     <Box>

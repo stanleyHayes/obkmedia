@@ -1,7 +1,6 @@
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
@@ -119,7 +118,6 @@ export default function LoginPage() {
             fullWidth
             size="large"
             disabled={submitting}
-            startIcon={submitting ? <CircularProgress size={16} color="inherit" /> : undefined}
           >
             {submitting ? 'Signing in…' : 'Sign in'}
           </Button>

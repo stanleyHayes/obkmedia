@@ -1,4 +1,5 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -7,13 +8,17 @@ import { SERVICES } from '../../content';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
+import SectionDecor from './SectionDecor';
 
 export default function ServicesSection() {
   const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <Box component="section" id="services" sx={{ py: { xs: 10, md: 16 }, bgcolor: palette.inkRaised }}>
-      <Container maxWidth="xl">
+    <Box component="section" id="services" sx={{ py: { xs: 10, md: 16 }, bgcolor: palette.inkRaised, position: 'relative', overflow: 'hidden' }}>
+      <SectionDecor sx={{ right: { xs: -50, md: 30 }, top: 20 }}>
+        <CameraAltOutlinedIcon sx={{ fontSize: { xs: 220, md: 340 } }} />
+      </SectionDecor>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
           <SectionHeading eyebrow="What we do" title="Crafted services for every story" />
         </Reveal>

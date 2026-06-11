@@ -25,3 +25,18 @@ createRoot(document.getElementById('root')!).render(
     </ThemeProvider>
   </StrictMode>,
 );
+
+// Fade out the static splash once the app has mounted (with a short minimum
+// display so it doesn't flash on fast loads), then remove it from the DOM.
+const splash = document.getElementById('obk-splash');
+if (splash) {
+  const MIN_MS = 650;
+  const start = performance.now();
+  requestAnimationFrame(() => {
+    const wait = Math.max(0, MIN_MS - (performance.now() - start));
+    window.setTimeout(() => {
+      splash.classList.add('obk-hide');
+      splash.addEventListener('transitionend', () => splash.remove(), { once: true });
+    }, wait);
+  });
+}

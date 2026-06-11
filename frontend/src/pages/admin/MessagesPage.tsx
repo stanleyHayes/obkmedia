@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
+import Skeleton from '@mui/material/Skeleton';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { notifyMessagesUpdated } from '../../admin/NotificationsContext';
 import { adminApi } from '../../api/admin';
 import type { ContactMessage } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
@@ -60,6 +61,7 @@ export default function MessagesPage() {
         const res = await adminApi.setMessageStatus(message._id, 'read');
         setItems((prev) => prev?.map((m) => (m._id === message._id ? res.item : m)) ?? prev);
         setSelected(res.item);
+        notifyMessagesUpdated();
       } catch {
         // non-fatal — leave as unread
       }
@@ -72,6 +74,7 @@ export default function MessagesPage() {
       const res = await adminApi.setMessageStatus(message._id, next);
       setItems((prev) => prev?.map((m) => (m._id === message._id ? res.item : m)) ?? prev);
       if (selected?._id === message._id) setSelected(res.item);
+      notifyMessagesUpdated();
     } catch {
       setToast('Failed to update status');
     }
@@ -83,6 +86,7 @@ export default function MessagesPage() {
       setItems((prev) => prev?.filter((m) => m._id !== message._id) ?? prev);
       if (selected?._id === message._id) setSelected(null);
       setToast('Message deleted');
+      notifyMessagesUpdated();
     } catch {
       setToast('Delete failed');
     }
@@ -150,8 +154,14 @@ export default function MessagesPage() {
       </Box>
 
       {items === null ? (
-        <Box sx={{ display: 'grid', placeItems: 'center', py: 12 }}>
-          <CircularProgress />
+        <Box sx={{ border: `1px solid ${palette.inkBorder}`, maxWidth: { md: '42%' } }}>
+          {Array.from({ length: 5 }, (_, i) => (
+            <Box key={i} sx={{ p: 2.5, borderTop: i === 0 ? 'none' : `1px solid ${palette.inkBorder}` }}>
+              <Skeleton variant="text" width="45%" height={22} sx={{ bgcolor: 'rgba(244,237,231,0.06)' }} />
+              <Skeleton variant="text" width="30%" height={16} sx={{ bgcolor: 'rgba(244,237,231,0.06)' }} />
+              <Skeleton variant="text" width="80%" height={18} sx={{ bgcolor: 'rgba(244,237,231,0.06)' }} />
+            </Box>
+          ))}
         </Box>
       ) : items.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 10, border: `1px dashed ${palette.inkBorder}` }}>

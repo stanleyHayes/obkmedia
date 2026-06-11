@@ -1,5 +1,6 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -14,6 +15,7 @@ import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
 import PortfolioCard from './PortfolioCard';
+import SectionDecor from './SectionDecor';
 
 export default function FeaturedCarousel() {
   const [items, setItems] = useState<Portfolio[] | null>(null);
@@ -45,8 +47,11 @@ export default function FeaturedCarousel() {
   if (error || (items && items.length === 0)) return null;
 
   return (
-    <Box component="section" sx={{ py: { xs: 10, md: 16 }, overflow: 'hidden' }}>
-      <Container maxWidth="xl">
+    <Box component="section" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
+      <SectionDecor sx={{ left: { xs: -50, md: 20 }, top: 0 }}>
+        <CollectionsOutlinedIcon sx={{ fontSize: { xs: 220, md: 320 } }} />
+      </SectionDecor>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 3 }}>
           <Reveal>
             <SectionHeading eyebrow="Featured work" title="Selected stories" />
@@ -62,7 +67,7 @@ export default function FeaturedCarousel() {
         </Box>
       </Container>
 
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Box
           ref={scrollerRef}
           sx={{

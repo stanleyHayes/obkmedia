@@ -9,6 +9,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutlined';
+import MarkChatReadOutlinedIcon from '@mui/icons-material/MarkChatReadOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -16,11 +17,13 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
+import Alert from '@mui/material/Alert';
 import AppBar from '@mui/material/AppBar';
+import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
+import Snackbar from '@mui/material/Snackbar';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -32,8 +35,11 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link as RouterLink, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useNotifications } from '../admin/NotificationsContext';
 import type { Permission } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
+import NotificationBell from '../components/admin/NotificationBell';
+import SplashScreen from '../components/SplashScreen';
 import { palette } from '../theme';
 
 const DRAWER_WIDTH = 256;
@@ -118,6 +124,7 @@ function isChildActive(child: NavChild, pathname: string): boolean {
 
 export default function AdminLayout() {
   const { admin, loading, logout, can } = useAuth();
+  const { count: unread, latest, clearLatest } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -155,17 +162,25 @@ export default function AdminLayout() {
   const toggleGroup = (group: NavGroup) =>
     setOpenGroups((prev) => ({ ...prev, [group.key]: !isGroupOpen(group) }));
 
-  if (loading) {
-    return (
-      <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
-        <CircularProgress color="primary" />
-      </Box>
-    );
-  }
+  if (loading) return <SplashScreen />;
 
   if (!admin) {
     return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
   }
+
+  // Show the unread count as a badge on the Messages nav item.
+  const navIcon = (child: NavChild) =>
+    child.to === '/admin/messages' && unread > 0 ? (
+      <Badge
+        badgeContent={unread}
+        max={99}
+        sx={{ '& .MuiBadge-badge': { bgcolor: palette.wineBright, color: palette.ivory, fontSize: '0.6rem', minWidth: 16, height: 16 } }}
+      >
+        {child.icon}
+      </Badge>
+    ) : (
+      child.icon
+    );
 
   /** Full sidebar: groups with icon headers, children threaded below. */
   const expandedNav = (
@@ -249,7 +264,7 @@ export default function AdminLayout() {
                           '& svg': { fontSize: '1.05rem' },
                         }}
                       >
-                        {child.icon}
+                        {navIcon(child)}
                       </ListItemIcon>
                       <ListItemText
                         primary={child.label}
@@ -296,7 +311,7 @@ export default function AdminLayout() {
                   <ListItemIcon
                     sx={{ minWidth: 0, color: selected ? palette.rose : palette.ivoryMuted, justifyContent: 'center' }}
                   >
-                    {child.icon}
+                    {navIcon(child)}
                   </ListItemIcon>
                 </ListItemButton>
               </Tooltip>
@@ -384,7 +399,8 @@ export default function AdminLayout() {
           <IconButton aria-label="Open admin menu" onClick={() => setMobileOpen(true)} sx={{ color: palette.ivory, mr: 1 }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">OBK Admin</Typography>
+          <Typography variant="h6" sx={{ flex: 1 }}>OBK Admin</Typography>
+          {can('messages.view') && <NotificationBell />}
         </Toolbar>
       </AppBar>
 
@@ -419,7 +435,7 @@ export default function AdminLayout() {
       </Drawer>
 
       <Box component="main" sx={{ flex: 1, p: { xs: 2.5, md: 4 }, mt: { xs: 8, md: 0 }, minWidth: 0 }}>
-        <Toolbar sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', px: '0 !important' }}>
+        <Toolbar sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', gap: 1.5, px: '0 !important' }}>
           <Tooltip title={`${admin.email} · ${admin.role?.name ?? 'No role'}`}>
             <Typography
               component={RouterLink}
@@ -430,9 +446,41 @@ export default function AdminLayout() {
               Signed in as <Box component="span" sx={{ color: palette.ivory }}>{admin.fullName}</Box>
             </Typography>
           </Tooltip>
+          {can('messages.view') && <NotificationBell />}
         </Toolbar>
         <Outlet />
       </Box>
+
+      {/* WhatsApp-style toast when a new inquiry arrives. */}
+      <Snackbar
+        open={Boolean(latest)}
+        autoHideDuration={7000}
+        onClose={clearLatest}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
+          icon={<MarkChatReadOutlinedIcon fontSize="small" />}
+          severity="success"
+          variant="filled"
+          onClose={clearLatest}
+          action={
+            <Box
+              component="button"
+              onClick={() => {
+                clearLatest();
+                navigate('/admin/messages');
+              }}
+              sx={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', mr: 1 }}
+            >
+              View
+            </Box>
+          }
+          sx={{ bgcolor: '#1faf57', color: '#fff', '& .MuiAlert-icon': { color: '#fff' }, alignItems: 'center' }}
+        >
+          New inquiry from {latest?.fullName}
+          {latest?.shootType ? ` · ${latest.shootType}` : ''}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

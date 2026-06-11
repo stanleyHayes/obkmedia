@@ -1,14 +1,15 @@
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
 import { ApiError } from '../../api/client';
 import { publicApi } from '../../api/public';
-import { BUDGET_RANGES, SHOOT_TYPES } from '../../content';
+import { BRAND, BUDGET_RANGES, SHOOT_TYPES } from '../../content';
 import { palette } from '../../theme';
 
 const EMPTY_FORM = {
@@ -67,16 +68,70 @@ export default function ContactForm() {
 
   if (success) {
     return (
-      <Box sx={{ border: `1px solid ${palette.wineBright}`, p: { xs: 4, md: 6 }, textAlign: 'center' }}>
-        <Typography variant="h4" sx={{ color: palette.ivory, mb: 2 }}>
-          Thank you.
-        </Typography>
-        <Typography variant="body1" sx={{ color: palette.ivoryMuted, mb: 4 }}>
-          {success}
-        </Typography>
-        <Button variant="outlined" onClick={() => setSuccess(null)}>
-          Send another message
-        </Button>
+      <Box
+        sx={{
+          border: `1px solid ${palette.inkBorder}`,
+          overflow: 'hidden',
+          maxWidth: 460,
+          mx: 'auto',
+          animation: 'obk-fade-up 500ms ease',
+        }}
+      >
+        {/* WhatsApp-style chat header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, bgcolor: '#075E54', px: 2.5, py: 1.75 }}>
+          <Box sx={{ width: 40, height: 40, borderRadius: '50%', bgcolor: '#1faf57', display: 'grid', placeItems: 'center', color: '#fff' }}>
+            <WhatsAppIcon />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography sx={{ color: '#fff', fontWeight: 500, lineHeight: 1.2 }}>OBK MEDIA</Typography>
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+              Typically replies within minutes
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Chat body */}
+        <Box
+          sx={{
+            bgcolor: '#0b141a',
+            p: 2.5,
+            minHeight: 150,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.25,
+            backgroundImage: 'radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)',
+            backgroundSize: '16px 16px',
+          }}
+        >
+          <Box sx={{ alignSelf: 'flex-end', bgcolor: '#005c4b', color: '#e9edef', px: 1.75, py: 1, borderRadius: '8px 8px 0 8px', maxWidth: '85%' }}>
+            <Typography variant="body2">Hi OBK MEDIA, I’d love to book a shoot.</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5, mt: 0.25 }}>
+              <Typography variant="caption" sx={{ color: 'rgba(233,237,239,0.6)', fontSize: '0.65rem' }}>sent</Typography>
+              <DoneAllIcon sx={{ fontSize: '0.95rem', color: '#53bdeb' }} />
+            </Box>
+          </Box>
+          <Box sx={{ alignSelf: 'flex-start', bgcolor: '#202c33', color: '#e9edef', px: 1.75, py: 1, borderRadius: '8px 8px 8px 0', maxWidth: '85%' }}>
+            <Typography variant="body2">{success}</Typography>
+          </Box>
+        </Box>
+
+        {/* Actions */}
+        <Box sx={{ bgcolor: palette.inkRaised, p: 2.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Button
+            component="a"
+            href={BRAND.whatsappUrl}
+            target="_blank"
+            rel="noopener"
+            variant="contained"
+            startIcon={<WhatsAppIcon />}
+            sx={{ bgcolor: '#1faf57', '&:hover': { bgcolor: '#178a45' } }}
+          >
+            Continue on WhatsApp
+          </Button>
+          <Button variant="text" onClick={() => setSuccess(null)} sx={{ color: palette.ivoryMuted }}>
+            Send another message
+          </Button>
+        </Box>
       </Box>
     );
   }
@@ -159,7 +214,6 @@ export default function ContactForm() {
         size="large"
         disabled={submitting}
         sx={{ mt: 4, minWidth: 220 }}
-        startIcon={submitting ? <CircularProgress size={16} color="inherit" /> : undefined}
       >
         {submitting ? 'Sending…' : 'Send inquiry'}
       </Button>

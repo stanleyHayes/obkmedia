@@ -1,13 +1,13 @@
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { adminApi } from '../../api/admin';
 import type { AdminStats, ContactMessage, Permission } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
+import { DashboardSkeleton } from '../../components/admin/Skeletons';
 import { palette } from '../../theme';
 
 export default function DashboardPage() {
@@ -27,13 +27,7 @@ export default function DashboardPage() {
   }, []);
 
   if (error) return <Alert severity="error">Couldn’t load dashboard stats — refresh to try again.</Alert>;
-  if (!stats) {
-    return (
-      <Box sx={{ display: 'grid', placeItems: 'center', py: 12 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (!stats) return <DashboardSkeleton />;
 
   const allCards: Array<{ label: string; value: number; to: string; permission: Permission; highlight?: boolean }> = [
     { label: 'Portfolio items', value: stats.portfolios, to: '/admin/portfolio', permission: 'portfolio.view' },

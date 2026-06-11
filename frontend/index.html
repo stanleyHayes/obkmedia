@@ -37,6 +37,75 @@
     </script>
   </head>
   <body>
+    <style>
+      #obk-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 22px;
+        background-color: #0b0709;
+        background-image: radial-gradient(ellipse at 50% 40%, rgba(95, 5, 58, 0.3), transparent 60%);
+        transition: opacity 500ms ease, visibility 500ms ease;
+        font-family: Georgia, 'Times New Roman', serif;
+      }
+      #obk-splash.obk-hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #obk-splash .obk-mark {
+        font-weight: 600;
+        font-size: clamp(2.2rem, 7vw, 3.4rem);
+        letter-spacing: 0.18em;
+        color: #f4ede7;
+        background: linear-gradient(100deg, #f4ede7 30%, #dfa9c9 50%, #f4ede7 70%);
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: obk-splash-shimmer 2s ease-in-out infinite;
+      }
+      #obk-splash .obk-mark em {
+        font-style: italic;
+      }
+      #obk-splash .obk-bar {
+        position: relative;
+        width: 160px;
+        height: 2px;
+        background: rgba(244, 237, 231, 0.12);
+        overflow: hidden;
+      }
+      #obk-splash .obk-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 40%;
+        background: #8e1b63;
+        animation: obk-splash-track 1.4s ease-in-out infinite;
+      }
+      @keyframes obk-splash-shimmer {
+        0% { background-position: 150% 0; }
+        100% { background-position: -150% 0; }
+      }
+      @keyframes obk-splash-track {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(350%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #obk-splash .obk-mark,
+        #obk-splash .obk-bar::after { animation: none; }
+      }
+    </style>
+    <div id="obk-splash" role="status" aria-label="Loading OBK MEDIA">
+      <div class="obk-mark">OBK <em>MEDIA</em></div>
+      <div class="obk-bar"></div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

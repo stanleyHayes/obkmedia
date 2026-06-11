@@ -1,3 +1,4 @@
+import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -5,6 +6,7 @@ import { ABOUT, BRAND } from '../../content';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
+import SectionDecor from './SectionDecor';
 
 const STATS = [
   { value: `${BRAND.yearsExperience}+`, label: 'Years of experience' },
@@ -17,8 +19,11 @@ const ABOUT_IMAGE = 'https://picsum.photos/seed/obk-about/900/1200';
 
 export default function AboutSection() {
   return (
-    <Box component="section" id="about" sx={{ py: { xs: 10, md: 16 } }}>
-      <Container maxWidth="xl">
+    <Box component="section" id="about" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
+      <SectionDecor sx={{ left: { xs: -50, md: -20 }, bottom: 30 }}>
+        <AutoStoriesOutlinedIcon sx={{ fontSize: { xs: 220, md: 320 } }} />
+      </SectionDecor>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Box
           sx={{
             display: 'grid',

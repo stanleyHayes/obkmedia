@@ -1,3 +1,4 @@
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import StarIcon from '@mui/icons-material/Star';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -7,11 +8,15 @@ import { TESTIMONIALS } from '../../content';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
+import SectionDecor from './SectionDecor';
 
 export default function TestimonialsSection() {
   return (
-    <Box component="section" sx={{ py: { xs: 10, md: 16 } }}>
-      <Container maxWidth="md">
+    <Box component="section" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
+      <SectionDecor sx={{ right: { xs: -40, md: 60 }, top: { xs: 10, md: -10 } }}>
+        <FormatQuoteIcon sx={{ fontSize: { xs: 200, md: 300 }, transform: 'scaleX(-1)' }} />
+      </SectionDecor>
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
           <SectionHeading eyebrow="Kind words" title="What clients remember" align="center" />
         </Reveal>

@@ -119,6 +119,14 @@ export interface PortfolioPayload {
   sortOrder?: number;
 }
 
+export interface NotificationItem {
+  id: string;
+  fullName: string;
+  shootType?: string;
+  message: string;
+  createdAt: string;
+}
+
 export interface AdminStats {
   portfolios: number;
   published: number;
