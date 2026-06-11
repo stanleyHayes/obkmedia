@@ -23,3 +23,6 @@ npm-debug.log*
 .vscode/
 .idea/
 *.swp
+
+# Local credential notes — never commit
+credentials.txt
