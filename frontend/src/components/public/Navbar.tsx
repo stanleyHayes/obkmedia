@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { BRAND } from '../../content';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 import LanguageSwitcher from '../LanguageSwitcher';
 import SocialLinks from './SocialLinks';
 import ThemeToggle from '../ThemeToggle';
@@ -104,9 +104,15 @@ export default function Navbar() {
     }
   };
 
-  // Over the (always dark) hero the text must stay light in both themes;
-  // once scrolled onto the page background it follows the active theme.
-  const navText = scrolled ? palette.ivory : '#f4ede7';
+  // Only the home page and portfolio detail pages open with an always-dark
+  // hero image; everywhere else the unscrolled bar sits on the page background.
+  // Over a dark hero the text must stay light in both themes; otherwise it
+  // follows the active theme (the scrolled scrim also flips with the theme).
+  const hasDarkHero = isHome || /^\/portfolio\/.+/.test(location.pathname);
+  const overDark = !scrolled && hasDarkHero;
+  const navText = overDark ? onDark.ivory : palette.ivory;
+  const navMuted = overDark ? 'rgba(244,237,231,0.72)' : palette.ivoryMuted;
+  const navRose = overDark ? onDark.rose : palette.rose;
 
   return (
     <>
@@ -127,7 +133,7 @@ export default function Navbar() {
             maxHeight: scrolled ? 0 : 44,
             opacity: scrolled ? 0 : 1,
             transition: 'all 360ms ease',
-            borderBottom: `1px solid rgba(223,169,201,0.12)`,
+            borderBottom: `1px solid ${overDark ? 'rgba(223,169,201,0.12)' : palette.inkBorder}`,
           }}
         >
           <Container maxWidth="xl">
@@ -139,25 +145,25 @@ export default function Navbar() {
                 justifyContent: 'space-between',
               }}
             >
-              <Stack direction="row" spacing={3} sx={{ alignItems: 'center', color: 'rgba(244,237,231,0.72)' }}>
+              <Stack direction="row" spacing={3} sx={{ alignItems: 'center', color: navMuted }}>
                 <Link
                   href={`mailto:${BRAND.email}`}
-                  sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
+                  sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: navRose } }}
                 >
                   <EmailOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.email}
                 </Link>
                 <Link
                   href="tel:+233546175921"
-                  sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
+                  sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: navRose } }}
                 >
                   <PhoneOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.phoneIntl}
                 </Link>
               </Stack>
               <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
-                <SocialLinks color="rgba(244,237,231,0.78)" size={18} />
-                <Box sx={{ width: '1px', height: 16, bgcolor: 'rgba(244,237,231,0.2)' }} />
-                <LanguageSwitcher color="rgba(244,237,231,0.78)" />
-                <ThemeToggle sx={{ color: 'rgba(244,237,231,0.78)', p: 0.5 }} />
+                <SocialLinks color={navMuted} size={18} />
+                <Box sx={{ width: '1px', height: 16, bgcolor: overDark ? 'rgba(244,237,231,0.2)' : palette.inkBorder }} />
+                <LanguageSwitcher color={navMuted} />
+                <ThemeToggle sx={{ color: navMuted, p: 0.5 }} />
               </Stack>
             </Stack>
           </Container>
@@ -181,7 +187,7 @@ export default function Navbar() {
             >
               <Typography variant="h5" component="span" sx={{ color: navText, letterSpacing: '0.16em', fontWeight: 600 }}>
                 OBK
-                <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>
+                <Box component="span" sx={{ color: navRose, fontStyle: 'italic' }}>
                   {' '}
                   MEDIA
                 </Box>
@@ -200,7 +206,7 @@ export default function Navbar() {
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      color: active ? palette.rose : navText,
+                      color: active ? navRose : navText,
                       fontFamily: '"Outfit", sans-serif',
                       fontSize: '0.76rem',
                       letterSpacing: '0.22em',
@@ -216,12 +222,12 @@ export default function Navbar() {
                         bottom: -7,
                         width: '100%',
                         height: '1px',
-                        bgcolor: palette.rose,
+                        bgcolor: navRose,
                         transform: active ? 'scaleX(1)' : 'scaleX(0)',
                         transformOrigin: 'left',
                         transition: 'transform 280ms ease',
                       },
-                      '&:hover': { color: palette.rose },
+                      '&:hover': { color: navRose },
                       '&:hover::after': { transform: 'scaleX(1)' },
                     }}
                   >

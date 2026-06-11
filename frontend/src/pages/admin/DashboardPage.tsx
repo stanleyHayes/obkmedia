@@ -8,7 +8,7 @@ import { adminApi } from '../../api/admin';
 import type { AdminStats, ContactMessage, Permission } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
 import { DashboardSkeleton } from '../../components/admin/Skeletons';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 
 export default function DashboardPage() {
   const { can } = useAuth();
@@ -107,7 +107,7 @@ export default function DashboardPage() {
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                {message.status === 'unread' && <Chip label="New" size="small" sx={{ bgcolor: palette.wine, color: palette.ivory }} />}
+                {message.status === 'unread' && <Chip label="New" size="small" sx={{ bgcolor: palette.wine, color: onDark.ivory }} />}
                 <Typography variant="caption" sx={{ color: palette.ivoryMuted }}>
                   {new Date(message.createdAt).toLocaleDateString()}
                 </Typography>

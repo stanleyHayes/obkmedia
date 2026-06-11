@@ -7,7 +7,7 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect } from 'react';
 import type { PortfolioImage } from '../../api/types';
-import { palette } from '../../theme';
+import { onDark } from '../../theme';
 import Watermark from './Watermark';
 
 interface LightboxProps {
@@ -60,7 +60,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
         <IconButton
           aria-label="Close"
           onClick={onClose}
-          sx={{ position: 'absolute', top: 16, right: 16, color: palette.ivory, zIndex: 2 }}
+          sx={{ position: 'absolute', top: 16, right: 16, color: onDark.ivory, zIndex: 2 }}
         >
           <CloseIcon />
         </IconButton>
@@ -71,7 +71,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
             e.stopPropagation();
             prev();
           }}
-          sx={{ position: 'absolute', left: { xs: 4, md: 24 }, color: palette.ivory, zIndex: 2 }}
+          sx={{ position: 'absolute', left: { xs: 4, md: 24 }, color: onDark.ivory, zIndex: 2 }}
         >
           <ChevronLeftIcon fontSize="large" />
         </IconButton>
@@ -95,10 +95,10 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
           />
           <Watermark />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1.5 }}>
-            <Typography variant="caption" sx={{ color: palette.ivoryMuted }}>
+            <Typography variant="caption" sx={{ color: onDark.ivoryMuted }}>
               {current.caption || ''}
             </Typography>
-            <Typography variant="caption" sx={{ color: palette.rose, letterSpacing: '0.2em' }}>
+            <Typography variant="caption" sx={{ color: onDark.rose, letterSpacing: '0.2em' }}>
               {String((index ?? 0) + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
             </Typography>
           </Box>
@@ -110,7 +110,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
             e.stopPropagation();
             next();
           }}
-          sx={{ position: 'absolute', right: { xs: 4, md: 24 }, color: palette.ivory, zIndex: 2 }}
+          sx={{ position: 'absolute', right: { xs: 4, md: 24 }, color: onDark.ivory, zIndex: 2 }}
         >
           <ChevronRightIcon fontSize="large" />
         </IconButton>

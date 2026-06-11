@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
 import SectionDecor from './SectionDecor';
@@ -33,7 +33,7 @@ export default function AwardsSection() {
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
-          <SectionHeading eyebrow={t('awards.eyebrow')} title={t('awards.title')} align="center" />
+          <SectionHeading eyebrow={t('awards.eyebrow')} title={t('awards.title')} align="center" onDark />
         </Reveal>
 
         <Box
@@ -57,7 +57,7 @@ export default function AwardsSection() {
                   transition: 'transform 360ms ease, border-color 360ms ease, background-color 360ms ease',
                   '&:hover': {
                     transform: 'translateY(-6px)',
-                    borderColor: palette.rose,
+                    borderColor: onDark.rose,
                     bgcolor: 'rgba(11,7,9,0.34)',
                   },
                 }}
@@ -85,15 +85,15 @@ export default function AwardsSection() {
                     display: 'grid',
                     placeItems: 'center',
                     borderRadius: '50%',
-                    border: `1px solid ${palette.rose}`,
-                    color: palette.rose,
+                    border: `1px solid ${onDark.rose}`,
+                    color: onDark.rose,
                     mb: 3,
                   }}
                 >
                   <EmojiEventsOutlinedIcon />
                 </Box>
 
-                <Typography variant="h5" sx={{ color: palette.ivory, mb: 1.5, pr: 5 }}>
+                <Typography variant="h5" sx={{ color: onDark.ivory, mb: 1.5, pr: 5 }}>
                   {award.title}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'rgba(244,237,231,0.78)' }}>
@@ -107,12 +107,12 @@ export default function AwardsSection() {
         {/* Pull-quote */}
         <Reveal delay={260}>
           <Box sx={{ textAlign: 'center', maxWidth: 820, mx: 'auto' }}>
-            <FormatQuoteIcon sx={{ color: palette.rose, fontSize: 44, transform: 'scaleX(-1)', opacity: 0.85 }} />
+            <FormatQuoteIcon sx={{ color: onDark.rose, fontSize: 44, transform: 'scaleX(-1)', opacity: 0.85 }} />
             <Typography
               variant="h3"
               sx={{
                 fontStyle: 'italic',
-                color: palette.ivory,
+                color: onDark.ivory,
                 fontSize: { xs: '1.7rem', md: '2.4rem' },
                 lineHeight: 1.3,
                 mt: 1,
@@ -120,7 +120,7 @@ export default function AwardsSection() {
             >
               {t('awards.quote')}
             </Typography>
-            <Box sx={{ width: 56, height: '1px', bgcolor: palette.rose, mx: 'auto', mt: 4 }} />
+            <Box sx={{ width: 56, height: '1px', bgcolor: onDark.rose, mx: 'auto', mt: 4 }} />
           </Box>
         </Reveal>
       </Container>

@@ -15,7 +15,7 @@ import { publicApi } from '../api/public';
 import type { Category, Portfolio } from '../api/types';
 import Reveal from '../components/Reveal';
 import PortfolioCard from '../components/public/PortfolioCard';
-import { palette } from '../theme';
+import { onDark, palette } from '../theme';
 import Seo from '../seo/Seo';
 
 export default function PortfolioPage() {
@@ -110,8 +110,11 @@ export default function PortfolioPage() {
                   sx={{
                     bgcolor: activeCategory === filter.slug ? palette.wine : 'transparent',
                     border: `1px solid ${activeCategory === filter.slug ? palette.wine : palette.inkBorder}`,
-                    color: activeCategory === filter.slug ? palette.ivory : palette.ivoryMuted,
-                    '&:hover': { bgcolor: 'rgba(95, 5, 58, 0.35)' },
+                    // Active chip sits on the fixed wine bg, so its text must stay light in both themes.
+                    color: activeCategory === filter.slug ? onDark.ivory : palette.ivoryMuted,
+                    '&:hover': {
+                      bgcolor: activeCategory === filter.slug ? palette.wine : 'rgba(95, 5, 58, 0.12)',
+                    },
                   }}
                 />
               ))}

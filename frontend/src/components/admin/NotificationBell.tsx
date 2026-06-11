@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../admin/NotificationsContext';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -40,7 +40,7 @@ export default function NotificationBell() {
             badgeContent={count}
             max={99}
             color="primary"
-            sx={{ '& .MuiBadge-badge': { bgcolor: palette.wineBright, color: palette.ivory } }}
+            sx={{ '& .MuiBadge-badge': { bgcolor: palette.wineBright, color: onDark.ivory } }}
           >
             <NotificationsNoneOutlinedIcon />
           </Badge>

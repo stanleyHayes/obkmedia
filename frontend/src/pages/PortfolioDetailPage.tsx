@@ -19,7 +19,7 @@ import PortfolioCard, { categoryName } from '../components/public/PortfolioCard'
 import Watermark from '../components/public/Watermark';
 import { BRAND } from '../content';
 import Seo from '../seo/Seo';
-import { palette } from '../theme';
+import { onDark, palette } from '../theme';
 
 export default function PortfolioDetailPage() {
   const { t } = useTranslation();
@@ -126,10 +126,10 @@ export default function PortfolioDetailPage() {
               <Box>
                 <Stack direction="row" spacing={1.5} sx={{ mb: 2, flexWrap: 'wrap', rowGap: 1.5 }}>
                   {meta.map((entry) => (
-                    <Chip key={String(entry)} label={entry} size="small" sx={{ bgcolor: 'rgba(11,7,9,0.7)', color: palette.rose, backdropFilter: 'blur(6px)' }} />
+                    <Chip key={String(entry)} label={entry} size="small" sx={{ bgcolor: 'rgba(11,7,9,0.7)', color: onDark.rose, backdropFilter: 'blur(6px)' }} />
                   ))}
                 </Stack>
-                <Typography variant="h1" sx={{ fontSize: { xs: '2.4rem', md: '4rem' }, maxWidth: 900 }}>
+                <Typography variant="h1" sx={{ fontSize: { xs: '2.4rem', md: '4rem' }, maxWidth: 900, color: onDark.ivory }}>
                   {item.title}
                 </Typography>
               </Box>

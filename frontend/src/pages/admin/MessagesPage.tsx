@@ -19,7 +19,7 @@ import { notifyMessagesUpdated } from '../../admin/NotificationsContext';
 import { adminApi } from '../../api/admin';
 import type { ContactMessage } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 
 type StatusFilter = '' | 'unread' | 'read';
 
@@ -146,7 +146,7 @@ export default function MessagesPage() {
               sx={{
                 bgcolor: status === value ? palette.wine : 'transparent',
                 border: `1px solid ${status === value ? palette.wine : palette.inkBorder}`,
-                color: status === value ? palette.ivory : palette.ivoryMuted,
+                color: status === value ? onDark.ivory : palette.ivoryMuted,
               }}
             />
           ))}
@@ -157,9 +157,9 @@ export default function MessagesPage() {
         <Box sx={{ border: `1px solid ${palette.inkBorder}`, maxWidth: { md: '42%' } }}>
           {Array.from({ length: 5 }, (_, i) => (
             <Box key={i} sx={{ p: 2.5, borderTop: i === 0 ? 'none' : `1px solid ${palette.inkBorder}` }}>
-              <Skeleton variant="text" width="45%" height={22} sx={{ bgcolor: 'rgba(244,237,231,0.06)' }} />
-              <Skeleton variant="text" width="30%" height={16} sx={{ bgcolor: 'rgba(244,237,231,0.06)' }} />
-              <Skeleton variant="text" width="80%" height={18} sx={{ bgcolor: 'rgba(244,237,231,0.06)' }} />
+              <Skeleton variant="text" width="45%" height={22} sx={{ bgcolor: palette.decor }} />
+              <Skeleton variant="text" width="30%" height={16} sx={{ bgcolor: palette.decor }} />
+              <Skeleton variant="text" width="80%" height={18} sx={{ bgcolor: palette.decor }} />
             </Box>
           ))}
         </Box>
@@ -196,7 +196,7 @@ export default function MessagesPage() {
                     {message.fullName}
                   </Typography>
                   {message.status === 'unread' && (
-                    <Chip label="New" size="small" sx={{ bgcolor: palette.wine, color: palette.ivory, flexShrink: 0 }} />
+                    <Chip label="New" size="small" sx={{ bgcolor: palette.wine, color: onDark.ivory, flexShrink: 0 }} />
                   )}
                 </Box>
                 <Typography variant="caption" sx={{ color: palette.rose }}>

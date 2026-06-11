@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { palette } from '../../theme';
 
-const shimmer = { bgcolor: 'rgba(244, 237, 231, 0.06)' };
+const shimmer = { bgcolor: palette.decor };
 
 /** Page heading placeholder. */
 export function HeadingSkeleton() {

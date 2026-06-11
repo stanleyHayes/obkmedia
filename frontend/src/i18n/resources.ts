@@ -105,6 +105,13 @@ export const en = {
       'Tell us about your day, your vision, and your dream images. We respond within 24 hours — or reach us instantly on WhatsApp.',
     whatsapp: 'Chat on WhatsApp',
     hours: 'Available 24 hours, nationwide',
+    labels: {
+      email: 'Email',
+      whatsapp: 'WhatsApp',
+      studio: 'Studio',
+      hours: 'Availability',
+      follow: 'Follow the work',
+    },
     form: {
       fullName: 'Full name',
       email: 'Email address',
@@ -300,6 +307,13 @@ export const fr: typeof en = {
       'Parlez-nous de votre journée, de votre vision et des images dont vous rêvez. Nous répondons sous 24 heures — ou joignez-nous instantanément sur WhatsApp.',
     whatsapp: 'Discuter sur WhatsApp',
     hours: 'Disponibles 24 h/24, partout au pays',
+    labels: {
+      email: 'E-mail',
+      whatsapp: 'WhatsApp',
+      studio: 'Studio',
+      hours: 'Disponibilité',
+      follow: 'Suivez notre travail',
+    },
     form: {
       fullName: 'Nom complet',
       email: 'Adresse e-mail',

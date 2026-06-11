@@ -5,25 +5,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { landingFor } from '../../admin/landingPages';
 import { adminApi } from '../../api/admin';
-import type { AdminUser, Permission } from '../../api/types';
 import { ApiError } from '../../api/client';
 import { useAuth } from '../../auth/AuthContext';
 import Seo from '../../seo/Seo';
 import { palette } from '../../theme';
-
-const LANDING_PERMISSION: Record<string, Permission> = {
-  '/admin/portfolio': 'portfolio.view',
-  '/admin/messages': 'messages.view',
-};
-
-/** Honor the saved landing page only if the user's role can still reach it. */
-function landingFor(admin: AdminUser): string {
-  const target = admin.preferences.defaultLandingPage || '/admin';
-  const needed = LANDING_PERMISSION[target];
-  if (needed && !admin.permissions.includes(needed)) return '/admin';
-  return target;
-}
 
 export default function LoginPage() {
   const { admin, loading, login } = useAuth();

@@ -10,7 +10,9 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutlined';
 import MarkChatReadOutlinedIcon from '@mui/icons-material/MarkChatReadOutlined';
+import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
@@ -42,7 +44,7 @@ import NotificationBell from '../components/admin/NotificationBell';
 import SplashScreen from '../components/SplashScreen';
 import ThemeToggle from '../components/ThemeToggle';
 import ForcePasswordReset from '../pages/admin/ForcePasswordReset';
-import { palette } from '../theme';
+import { onDark, palette } from '../theme';
 
 const DRAWER_WIDTH = 256;
 const RAIL_WIDTH = 76;
@@ -99,7 +101,11 @@ const GROUPS: NavGroup[] = [
     key: 'account',
     label: 'Account',
     icon: <AccountCircleOutlinedIcon />,
-    children: [{ label: 'My profile', to: '/admin/profile', icon: <ManageAccountsOutlinedIcon /> }],
+    children: [
+      { label: 'My profile', to: '/admin/profile', icon: <ManageAccountsOutlinedIcon /> },
+      { label: 'Preferences', to: '/admin/preferences', icon: <TuneOutlinedIcon /> },
+      { label: 'Security', to: '/admin/security', icon: <KeyOutlinedIcon /> },
+    ],
   },
 ];
 
@@ -181,7 +187,7 @@ export default function AdminLayout() {
       <Badge
         badgeContent={unread}
         max={99}
-        sx={{ '& .MuiBadge-badge': { bgcolor: palette.wineBright, color: palette.ivory, fontSize: '0.6rem', minWidth: 16, height: 16 } }}
+        sx={{ '& .MuiBadge-badge': { bgcolor: palette.wineBright, color: onDark.ivory, fontSize: '0.6rem', minWidth: 16, height: 16 } }}
       >
         {child.icon}
       </Badge>
@@ -399,6 +405,9 @@ export default function AdminLayout() {
         sx={{
           display: { md: 'none' },
           bgcolor: palette.inkRaised,
+          // AppBar's default text color is primary.contrastText (fixed light) —
+          // pin it to the flipping token so it stays legible in light mode.
+          color: palette.ivory,
           borderBottom: `1px solid ${palette.inkBorder}`,
         }}
       >

@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { BRAND } from '../../content';
-import { palette } from '../../theme';
+import { onDark } from '../../theme';
 
 // Placeholder until the client's hero image is supplied (client confirmed one exists).
 const HERO_IMAGE = 'https://picsum.photos/seed/obk-hero/1920/1200';
@@ -46,8 +46,8 @@ export default function HeroSection() {
             spacing={2}
             sx={{ alignItems: 'center', mb: 3, opacity: 0, animation: 'obk-fade-up 800ms ease forwards 200ms' }}
           >
-            <Box sx={{ width: 56, height: '1px', bgcolor: palette.rose }} />
-            <Typography variant="overline" sx={{ color: palette.rose }}>
+            <Box sx={{ width: 56, height: '1px', bgcolor: onDark.rose }} />
+            <Typography variant="overline" sx={{ color: onDark.rose }}>
               {BRAND.tagline}
             </Typography>
           </Stack>
@@ -56,13 +56,13 @@ export default function HeroSection() {
             variant="h1"
             sx={{
               fontSize: { xs: '2.9rem', sm: '4rem', md: '5.4rem' },
-              color: palette.ivory,
+              color: onDark.ivory,
               opacity: 0,
               animation: 'obk-fade-up 900ms ease forwards 420ms',
             }}
           >
             {t('hero.headlinePre')}{' '}
-            <Box component="em" sx={{ color: palette.rose, fontStyle: 'italic' }}>
+            <Box component="em" sx={{ color: onDark.rose, fontStyle: 'italic' }}>
               {t('hero.headlineEm')}
             </Box>
           </Typography>
@@ -72,7 +72,7 @@ export default function HeroSection() {
             sx={{
               mt: 3.5,
               maxWidth: 560,
-              color: palette.ivoryMuted,
+              color: onDark.ivoryMuted,
               fontSize: '1.05rem',
               opacity: 0,
               animation: 'obk-fade-up 900ms ease forwards 640ms',
@@ -93,7 +93,12 @@ export default function HeroSection() {
             >
               {t('hero.book')}
             </Button>
-            <Button variant="outlined" size="large" onClick={() => navigate('/portfolio')}>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => navigate('/portfolio')}
+              sx={{ color: onDark.ivory, borderColor: 'rgba(244, 237, 231, 0.4)' }}
+            >
               {t('hero.viewPortfolio')}
             </Button>
           </Stack>
@@ -108,7 +113,7 @@ export default function HeroSection() {
           left: '50%',
           width: '1px',
           height: 72,
-          background: `linear-gradient(to bottom, transparent, ${palette.rose})`,
+          background: `linear-gradient(to bottom, transparent, ${onDark.rose})`,
           opacity: 0.7,
         }}
       />

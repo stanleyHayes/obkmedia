@@ -39,6 +39,18 @@ export const TOKENS: Record<ThemeMode, Record<string, string>> = {
   },
 };
 
+/**
+ * Fixed colors for content rendered over permanently dark surfaces (hero
+ * photos, wine bands, image scrims, the lightbox backdrop). These match the
+ * dark-mode tokens and must NOT flip with the theme — `palette.*` would go
+ * dark-on-dark in light mode.
+ */
+export const onDark = {
+  ivory: '#f4ede7',
+  ivoryMuted: '#b9aab3',
+  rose: '#dfa9c9',
+} as const;
+
 /** CSS-variable references — stable across theme switches. */
 export const palette = {
   ink: 'var(--obk-ink)',

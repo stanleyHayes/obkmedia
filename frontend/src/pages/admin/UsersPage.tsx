@@ -24,7 +24,7 @@ import { ApiError } from '../../api/client';
 import type { AdminUser, Role } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
 import { ListSkeleton } from '../../components/admin/Skeletons';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 
 interface UserFormState {
   open: boolean;
@@ -215,7 +215,7 @@ export default function UsersPage() {
                   display: 'grid',
                   placeItems: 'center',
                   bgcolor: palette.wine,
-                  color: palette.ivory,
+                  color: onDark.ivory,
                   fontFamily: '"Cormorant Garamond", serif',
                   fontSize: '1.2rem',
                   flexShrink: 0,
@@ -240,7 +240,7 @@ export default function UsersPage() {
               <Chip
                 label={user.role?.name ?? 'No role'}
                 size="small"
-                sx={{ bgcolor: user.role?.isSystem ? palette.wine : 'transparent', border: `1px solid ${palette.wine}`, color: palette.ivory }}
+                sx={{ bgcolor: user.role?.isSystem ? palette.wine : 'transparent', border: `1px solid ${palette.wine}`, color: user.role?.isSystem ? onDark.ivory : palette.ivory }}
               />
               {manage && (
                 <>

@@ -10,8 +10,10 @@ import LoginPage from './pages/admin/LoginPage';
 import MessagesPage from './pages/admin/MessagesPage';
 import PortfolioEditPage from './pages/admin/PortfolioEditPage';
 import PortfolioListPage from './pages/admin/PortfolioListPage';
+import PreferencesPage from './pages/admin/PreferencesPage';
 import ProfilePage from './pages/admin/ProfilePage';
 import ResetPasswordPage from './pages/admin/ResetPasswordPage';
+import SecurityPage from './pages/admin/SecurityPage';
 import RolesPage from './pages/admin/RolesPage';
 import UsersPage from './pages/admin/UsersPage';
 
@@ -82,6 +84,8 @@ export default function AdminApp() {
             }
           />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="preferences" element={<PreferencesPage />} />
+          <Route path="security" element={<SecurityPage />} />
           <Route path="*" element={<AdminNotFoundPage />} />
         </Route>
         </Routes>

@@ -57,7 +57,9 @@ export function ThemeModeProvider({ children }: { children: ReactNode }) {
   return (
     <ThemeModeContext.Provider value={value}>
       <ThemeProvider theme={muiTheme}>
-        <CssBaseline />
+        {/* enableColorScheme sets `color-scheme` on :root so native widgets
+            (date-picker icon, scrollbars) follow the active theme. */}
+        <CssBaseline enableColorScheme />
         {children}
       </ThemeProvider>
     </ThemeModeContext.Provider>

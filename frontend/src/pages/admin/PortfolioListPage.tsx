@@ -20,7 +20,7 @@ import { adminApi } from '../../api/admin';
 import type { Portfolio } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
 import { ListSkeleton } from '../../components/admin/Skeletons';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 
 export default function PortfolioListPage() {
   const navigate = useNavigate();
@@ -156,7 +156,7 @@ export default function PortfolioListPage() {
                   sx={{
                     bgcolor: item.isFeatured ? palette.wine : 'transparent',
                     border: `1px solid ${item.isFeatured ? palette.wine : palette.inkBorder}`,
-                    color: item.isFeatured ? palette.ivory : palette.ivoryMuted,
+                    color: item.isFeatured ? onDark.ivory : palette.ivoryMuted,
                   }}
                 />
               </Tooltip>

@@ -3,7 +3,7 @@ import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import { Link as RouterLink } from 'react-router-dom';
 import type { Portfolio } from '../../api/types';
-import { palette } from '../../theme';
+import { onDark, palette } from '../../theme';
 
 export function categoryName(item: Portfolio): string | null {
   if (item.categoryId && typeof item.categoryId === 'object') return item.categoryId.name;
@@ -68,7 +68,7 @@ export default function PortfolioCard({ item }: PortfolioCardProps) {
               top: 14,
               left: 14,
               bgcolor: 'rgba(11, 7, 9, 0.72)',
-              color: palette.rose,
+              color: onDark.rose,
               backdropFilter: 'blur(6px)',
             }}
           />
