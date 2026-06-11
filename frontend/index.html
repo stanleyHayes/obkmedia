@@ -37,6 +37,22 @@
     </script>
   </head>
   <body>
+    <script>
+      // Apply the saved theme before first paint so the splash and initial
+      // render don't flash the wrong colours. Kept in sync with theme.ts tokens.
+      (function () {
+        try {
+          var m = localStorage.getItem('obk-theme');
+          if (m !== 'light' && m !== 'dark') {
+            m = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          document.documentElement.dataset.theme = m;
+          var s = document.documentElement.style;
+          s.setProperty('--obk-splash-bg', m === 'light' ? '#f6f1ec' : '#0b0709');
+          s.setProperty('--obk-splash-mark', m === 'light' ? '#221319' : '#f4ede7');
+        } catch (e) {}
+      })();
+    </script>
     <style>
       #obk-splash {
         position: fixed;
@@ -47,7 +63,7 @@
         align-items: center;
         justify-content: center;
         gap: 22px;
-        background-color: #0b0709;
+        background-color: var(--obk-splash-bg, #0b0709);
         background-image: radial-gradient(ellipse at 50% 40%, rgba(95, 5, 58, 0.3), transparent 60%);
         transition: opacity 500ms ease, visibility 500ms ease;
         font-family: Georgia, 'Times New Roman', serif;
@@ -61,8 +77,8 @@
         font-weight: 600;
         font-size: clamp(2.2rem, 7vw, 3.4rem);
         letter-spacing: 0.18em;
-        color: #f4ede7;
-        background: linear-gradient(100deg, #f4ede7 30%, #dfa9c9 50%, #f4ede7 70%);
+        color: var(--obk-splash-mark, #f4ede7);
+        background: linear-gradient(100deg, var(--obk-splash-mark, #f4ede7) 30%, #b9468f 50%, var(--obk-splash-mark, #f4ede7) 70%);
         background-size: 200% 100%;
         -webkit-background-clip: text;
         background-clip: text;
