@@ -13,6 +13,8 @@ import { HttpError } from '../middleware/errors.js';
 import { validateBody } from '../middleware/validate.js';
 import { Admin } from '../models/Admin.js';
 import { Role } from '../models/Role.js';
+import { sendNewUserEmail } from '../services/email.js';
+import { generatePassword } from '../utils/tokens.js';
 import { serializeAdmin } from './adminAuth.js';
 
 export const adminUsersRouter = Router();
@@ -68,7 +70,6 @@ adminUsersRouter.get('/', requirePermission('users.view'), async (_req, res) => 
 const createSchema = z.object({
   fullName: z.string().trim().min(2).max(150),
   email: z.email('Enter a valid email').max(255),
-  password: z.string().min(8, 'Password must be at least 8 characters').max(200),
   roleId: z.string().min(1, 'Select a role'),
 });
 
@@ -78,14 +79,19 @@ adminUsersRouter.post('/', requirePermission('users.manage'), validateBody(creat
   assertCanAssignRole(req, role);
   const existing = await Admin.findOne({ email: body.email.toLowerCase() }).select('_id').lean();
   if (existing) throw new HttpError(409, 'That email is already in use by another user');
-  const passwordHash = await bcrypt.hash(body.password, 12);
+  // The server generates the password and emails it; the user must change it on
+  // first sign-in. Admins never see or set the initial password.
+  const tempPassword = generatePassword();
+  const passwordHash = await bcrypt.hash(tempPassword, 12);
   const created = await Admin.create({
     fullName: body.fullName,
     email: body.email.toLowerCase(),
     passwordHash,
     roleId: body.roleId,
     isActive: true,
+    mustResetPassword: true,
   });
+  await sendNewUserEmail(created.email, created.fullName, tempPassword);
   const populated = await Admin.findById(created._id)
     .select('-passwordHash')
     .populate('roleId', ROLE_FIELDS)
@@ -182,6 +188,7 @@ adminUsersRouter.patch(
     }
     target.passwordHash = await bcrypt.hash(password, 12);
     target.tokenVersion = (target.tokenVersion ?? 0) + 1; // log the target out everywhere
+    target.mustResetPassword = true; // force them to choose their own at next sign-in
     await target.save();
     res.json({ ok: true });
   },

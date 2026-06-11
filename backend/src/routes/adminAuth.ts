@@ -13,6 +13,8 @@ import {
 import { HttpError } from '../middleware/errors.js';
 import { validateBody } from '../middleware/validate.js';
 import { Admin, LANDING_PAGES } from '../models/Admin.js';
+import { sendPasswordResetEmail } from '../services/email.js';
+import { generateResetToken, hashToken } from '../utils/tokens.js';
 
 export const adminAuthRouter = Router();
 
@@ -46,6 +48,7 @@ interface SerializableAdmin {
   lastLoginAt?: Date | null;
   isActive?: boolean;
   createdAt?: Date;
+  mustResetPassword?: boolean;
 }
 
 export function serializeAdmin(admin: SerializableAdmin) {
@@ -64,6 +67,7 @@ export function serializeAdmin(admin: SerializableAdmin) {
     lastLoginAt: admin.lastLoginAt ?? null,
     isActive: admin.isActive ?? true,
     createdAt: admin.createdAt ?? null,
+    mustResetPassword: admin.mustResetPassword ?? false,
   };
 }
 
@@ -137,10 +141,68 @@ adminAuthRouter.patch('/password', requireAuth, validateBody(passwordSchema), as
   // Invalidate other existing sessions, then re-issue this one so the current
   // user stays signed in after changing their own password.
   admin.tokenVersion = (admin.tokenVersion ?? 0) + 1;
+  admin.mustResetPassword = false;
   await admin.save();
   res.cookie(AUTH_COOKIE, signToken(String(admin._id), admin.tokenVersion), cookieOptions);
-  res.json({ ok: true });
+  const populated = await loadAdmin(req.adminId!);
+  res.json({ ok: true, admin: populated ? serializeAdmin(populated) : undefined });
 });
+
+// ---- Forgot / reset password (unauthenticated) ----
+
+const forgotLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 6,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests — please try again later' },
+});
+
+adminAuthRouter.post(
+  '/forgot-password',
+  forgotLimiter,
+  validateBody(z.object({ email: z.email('Enter a valid email') })),
+  async (req, res) => {
+    const { email } = req.body as { email: string };
+    const admin = await Admin.findOne({ email: email.toLowerCase(), isActive: true });
+    if (admin) {
+      const { token, hash } = generateResetToken();
+      admin.resetTokenHash = hash;
+      admin.resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      await admin.save();
+      await sendPasswordResetEmail(admin.email, admin.fullName, token);
+    }
+    // Always succeed — never reveal whether the email exists.
+    res.json({ ok: true });
+  },
+);
+
+adminAuthRouter.post(
+  '/reset-password',
+  forgotLimiter,
+  validateBody(
+    z.object({
+      token: z.string().min(10),
+      password: z.string().min(8, 'Password must be at least 8 characters').max(200),
+    }),
+  ),
+  async (req, res) => {
+    const { token, password } = req.body as { token: string; password: string };
+    const admin = await Admin.findOne({
+      resetTokenHash: hashToken(token),
+      resetTokenExpires: { $gt: new Date() },
+      isActive: true,
+    });
+    if (!admin) throw new HttpError(400, 'This reset link is invalid or has expired');
+    admin.passwordHash = await bcrypt.hash(password, 12);
+    admin.resetTokenHash = null;
+    admin.resetTokenExpires = null;
+    admin.mustResetPassword = false;
+    admin.tokenVersion = (admin.tokenVersion ?? 0) + 1;
+    await admin.save();
+    res.json({ ok: true });
+  },
+);
 
 const preferencesSchema = z.object({
   notifyOnContact: z.boolean().optional(),

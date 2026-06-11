@@ -1,6 +1,7 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutlined';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -117,19 +118,13 @@ export default function UsersPage() {
         if (form.user.id === me?.id) setAdmin(res.item);
         setToast('User updated');
       } else {
-        if (form.password.length < 8) {
-          setFormError('Password must be at least 8 characters.');
-          setSaving(false);
-          return;
-        }
         const res = await adminApi.createUser({
           fullName: form.fullName,
           email: form.email,
-          password: form.password,
           roleId: form.roleId,
         });
         setItems((prev) => (prev ? [...prev, res.item] : prev));
-        setToast('User created');
+        setToast('User created — a temporary password was emailed to them');
       }
       setForm(FORM_CLOSED);
     } catch (err) {
@@ -312,17 +307,10 @@ export default function UsersPage() {
               sx={{ mb: 2.5 }}
             />
             {!form.user && (
-              <TextField
-                label="Password"
-                type="password"
-                fullWidth
-                required
-                autoComplete="new-password"
-                helperText="At least 8 characters — share it securely with the new user"
-                value={form.password}
-                onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
-                sx={{ mb: 2.5 }}
-              />
+              <Alert severity="info" icon={<MailOutlineIcon fontSize="small" />} sx={{ mb: 2.5 }}>
+                A temporary password will be generated and emailed to the user. They’ll set their
+                own password the first time they sign in.
+              </Alert>
             )}
             <TextField
               select

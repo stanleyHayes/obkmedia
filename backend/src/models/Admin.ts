@@ -23,6 +23,11 @@ const adminSchema = new Schema(
     lastLoginAt: { type: Date, default: null },
     /** Bumped on every password change/reset to invalidate existing JWTs. */
     tokenVersion: { type: Number, default: 0 },
+    /** True after a generated/admin-set password — forces a change at next sign-in. */
+    mustResetPassword: { type: Boolean, default: false },
+    /** SHA-256 of the active forgot-password token, with its expiry. */
+    resetTokenHash: { type: String, default: null },
+    resetTokenExpires: { type: Date, default: null },
   },
   { timestamps: true },
 );

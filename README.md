@@ -62,6 +62,10 @@ The dashboard supports multiple admin users with role-based access control:
   matrix; roles in use can't be deleted.
 - **My profile** (`/admin/profile`): update name/email, change password (requires current password),
   and preferences — opt into email copies of new inquiries, choose your after-login landing page.
+- **User onboarding**: creating a user generates a temporary password and emails it to them (admins
+  never set or see it); the user is forced to choose their own password at first sign-in. Admin
+  password resets work the same way. A **Forgot password** flow on the login page emails a
+  one-hour reset link (no account-enumeration). All password changes invalidate existing sessions.
 - Permissions are enforced on every API route (`requirePermission`) and mirrored in the UI: nav
   items, pages, and action buttons appear only for users whose role grants them.
 

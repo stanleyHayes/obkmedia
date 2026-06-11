@@ -41,6 +41,7 @@ import { useAuth } from '../auth/AuthContext';
 import NotificationBell from '../components/admin/NotificationBell';
 import SplashScreen from '../components/SplashScreen';
 import ThemeToggle from '../components/ThemeToggle';
+import ForcePasswordReset from '../pages/admin/ForcePasswordReset';
 import { palette } from '../theme';
 
 const DRAWER_WIDTH = 256;
@@ -167,6 +168,11 @@ export default function AdminLayout() {
 
   if (!admin) {
     return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
+  }
+
+  // A generated/admin-set password must be changed before reaching the dashboard.
+  if (admin.mustResetPassword) {
+    return <ForcePasswordReset />;
   }
 
   // Show the unread count as a badge on the Messages nav item.

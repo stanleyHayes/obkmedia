@@ -11,6 +11,8 @@ interface AuthState {
   can: (permission: Permission) => boolean;
   /** Replace the cached admin after profile/preference updates. */
   setAdmin: (admin: AdminUser) => void;
+  /** Re-fetch the current admin from the server. */
+  refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -55,9 +57,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setAdmin = useCallback((next: AdminUser) => setAdminState(next), []);
 
+  const refresh = useCallback(async () => {
+    try {
+      const res = await adminApi.me();
+      setAdminState(res.admin);
+    } catch {
+      setAdminState(null);
+    }
+  }, []);
+
   const value = useMemo(
-    () => ({ admin, loading, login, logout, can, setAdmin }),
-    [admin, loading, login, logout, can, setAdmin],
+    () => ({ admin, loading, login, logout, can, setAdmin, refresh }),
+    [admin, loading, login, logout, can, setAdmin, refresh],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

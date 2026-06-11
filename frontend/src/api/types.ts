@@ -88,6 +88,7 @@ export interface AdminUser {
   lastLoginAt?: string | null;
   isActive?: boolean;
   createdAt?: string;
+  mustResetPassword?: boolean;
 }
 
 export interface ContactPayload {

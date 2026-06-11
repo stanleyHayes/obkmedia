@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { adminApi } from '../../api/admin';
 import type { AdminUser, Permission } from '../../api/types';
 import { ApiError } from '../../api/client';
 import { useAuth } from '../../auth/AuthContext';
@@ -32,6 +33,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [mode, setMode] = useState<'login' | 'forgot'>('login');
+  const [forgotSent, setForgotSent] = useState(false);
 
   if (!loading && admin) {
     const from = (location.state as { from?: string } | null)?.from;
@@ -43,14 +46,25 @@ export default function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const signedIn = await login(email, password);
-      const from = (location.state as { from?: string } | null)?.from;
-      navigate(from ?? landingFor(signedIn), { replace: true });
+      if (mode === 'forgot') {
+        await adminApi.forgotPassword(email);
+        setForgotSent(true);
+      } else {
+        const signedIn = await login(email, password);
+        const from = (location.state as { from?: string } | null)?.from;
+        navigate(from ?? landingFor(signedIn), { replace: true });
+      }
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Login failed — please try again.');
+      setError(err instanceof ApiError ? err.message : 'Something went wrong — please try again.');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const switchMode = (next: 'login' | 'forgot') => {
+    setMode(next);
+    setError(null);
+    setForgotSent(false);
   };
 
   return (
@@ -92,35 +106,66 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2.5 }}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            required
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 4 }}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            size="large"
-            disabled={submitting}
-          >
-            {submitting ? 'Signing in…' : 'Sign in'}
-          </Button>
+          {mode === 'forgot' && forgotSent ? (
+            <>
+              <Alert severity="success" sx={{ mb: 3 }}>
+                If an account exists for that email, we’ve sent a reset link. Check your inbox.
+              </Alert>
+              <Button variant="outlined" fullWidth onClick={() => switchMode('login')}>
+                Back to sign in
+              </Button>
+            </>
+          ) : (
+            <>
+              <TextField
+                label="Email"
+                type="email"
+                fullWidth
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                sx={{ mb: 2.5 }}
+              />
+              {mode === 'login' && (
+                <TextField
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  sx={{ mb: 1.5 }}
+                />
+              )}
+              {mode === 'forgot' && (
+                <Typography variant="body2" sx={{ color: palette.ivoryMuted, mb: 3 }}>
+                  Enter your account email and we’ll send you a link to reset your password.
+                </Typography>
+              )}
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: mode === 'login' ? 3 : 0 }}>
+                {mode === 'login' ? (
+                  <Button variant="text" size="small" onClick={() => switchMode('forgot')} sx={{ color: palette.rose }}>
+                    Forgot password?
+                  </Button>
+                ) : (
+                  <Button variant="text" size="small" onClick={() => switchMode('login')} sx={{ color: palette.ivoryMuted }}>
+                    Back to sign in
+                  </Button>
+                )}
+              </Box>
+              <Button type="submit" variant="contained" fullWidth size="large" disabled={submitting}>
+                {submitting
+                  ? mode === 'login'
+                    ? 'Signing in…'
+                    : 'Sending…'
+                  : mode === 'login'
+                    ? 'Sign in'
+                    : 'Send reset link'}
+              </Button>
+            </>
+          )}
         </Box>
       </Box>
     </>

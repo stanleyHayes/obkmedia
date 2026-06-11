@@ -24,13 +24,17 @@ export const adminApi = {
   updateProfile: (payload: { fullName: string; email: string }) =>
     api.patch<{ admin: AdminUser }>('/api/admin/auth/profile', payload),
   updatePassword: (payload: { currentPassword: string; newPassword: string }) =>
-    api.patch<{ ok: boolean }>('/api/admin/auth/password', payload),
+    api.patch<{ ok: boolean; admin?: AdminUser }>('/api/admin/auth/password', payload),
+  forgotPassword: (email: string) =>
+    api.post<{ ok: boolean }>('/api/admin/auth/forgot-password', { email }),
+  resetPassword: (token: string, password: string) =>
+    api.post<{ ok: boolean }>('/api/admin/auth/reset-password', { token, password }),
   updatePreferences: (payload: Partial<AdminPreferences>) =>
     api.patch<{ admin: AdminUser }>('/api/admin/auth/preferences', payload),
 
   // users
   listUsers: () => api.get<{ items: AdminUser[] }>('/api/admin/users'),
-  createUser: (payload: { fullName: string; email: string; password: string; roleId: string }) =>
+  createUser: (payload: { fullName: string; email: string; roleId: string }) =>
     api.post<{ item: AdminUser }>('/api/admin/users', payload),
   updateUser: (
     id: string,

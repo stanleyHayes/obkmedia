@@ -11,6 +11,7 @@ import MessagesPage from './pages/admin/MessagesPage';
 import PortfolioEditPage from './pages/admin/PortfolioEditPage';
 import PortfolioListPage from './pages/admin/PortfolioListPage';
 import ProfilePage from './pages/admin/ProfilePage';
+import ResetPasswordPage from './pages/admin/ResetPasswordPage';
 import RolesPage from './pages/admin/RolesPage';
 import UsersPage from './pages/admin/UsersPage';
 
@@ -21,6 +22,7 @@ export default function AdminApp() {
       <NotificationsProvider>
         <Routes>
         <Route path="login" element={<LoginPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
         <Route element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route

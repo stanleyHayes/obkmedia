@@ -55,3 +55,52 @@ export async function sendContactNotification(
     console.error('[email] failed to send contact notification', err);
   }
 }
+
+async function sendOrLog(to: string, subject: string, text: string): Promise<void> {
+  if (!resend) {
+    console.log(`[email] (dev fallback) to ${to} — ${subject}\n${text}`);
+    return;
+  }
+  try {
+    await resend.emails.send({ from: env.contactFromEmail, to, subject, text });
+  } catch (err) {
+    console.error('[email] failed to send', subject, err);
+  }
+}
+
+const adminBase = env.clientOrigin.split(',')[0].trim();
+
+/** Sends a new admin user their temporary password and the login link. */
+export async function sendNewUserEmail(to: string, fullName: string, tempPassword: string): Promise<void> {
+  const text = [
+    `Hi ${fullName},`,
+    '',
+    'An OBK MEDIA admin account has been created for you.',
+    '',
+    `Sign in here: ${adminBase}/admin/login`,
+    `Email: ${to}`,
+    `Temporary password: ${tempPassword}`,
+    '',
+    'For your security, you’ll be asked to set a new password the first time you sign in.',
+    '',
+    '— OBK MEDIA',
+  ].join('\n');
+  await sendOrLog(to, 'Your OBK MEDIA admin account', text);
+}
+
+/** Sends a password-reset link containing the one-time token. */
+export async function sendPasswordResetEmail(to: string, fullName: string, token: string): Promise<void> {
+  const link = `${adminBase}/admin/reset-password?token=${token}`;
+  const text = [
+    `Hi ${fullName},`,
+    '',
+    'We received a request to reset your OBK MEDIA admin password.',
+    '',
+    `Reset it here (valid for 1 hour): ${link}`,
+    '',
+    'If you didn’t request this, you can safely ignore this email.',
+    '',
+    '— OBK MEDIA',
+  ].join('\n');
+  await sendOrLog(to, 'Reset your OBK MEDIA password', text);
+}
