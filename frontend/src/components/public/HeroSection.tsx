@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { BRAND } from '../../content';
 import { palette } from '../../theme';
@@ -12,6 +13,7 @@ const HERO_IMAGE = 'https://picsum.photos/seed/obk-hero/1920/1200';
 
 export default function HeroSection() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <Box component="section" sx={{ position: 'relative', minHeight: '100svh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
       <Box
@@ -59,9 +61,9 @@ export default function HeroSection() {
               animation: 'obk-fade-up 900ms ease forwards 420ms',
             }}
           >
-            Capturing moments that{' '}
+            {t('hero.headlinePre')}{' '}
             <Box component="em" sx={{ color: palette.rose, fontStyle: 'italic' }}>
-              live beyond time
+              {t('hero.headlineEm')}
             </Box>
           </Typography>
 
@@ -76,7 +78,7 @@ export default function HeroSection() {
               animation: 'obk-fade-up 900ms ease forwards 640ms',
             }}
           >
-            {BRAND.heroSubheadline}
+            {t('hero.subheadline')}
           </Typography>
 
           <Stack
@@ -89,10 +91,10 @@ export default function HeroSection() {
               size="large"
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              {BRAND.primaryCta}
+              {t('hero.book')}
             </Button>
             <Button variant="outlined" size="large" onClick={() => navigate('/portfolio')}>
-              {BRAND.secondaryCta}
+              {t('hero.viewPortfolio')}
             </Button>
           </Stack>
         </Box>

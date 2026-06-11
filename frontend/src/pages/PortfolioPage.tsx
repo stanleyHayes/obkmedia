@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { publicApi } from '../api/public';
 import type { Category, Portfolio } from '../api/types';
@@ -18,6 +19,7 @@ import { palette } from '../theme';
 import Seo from '../seo/Seo';
 
 export default function PortfolioPage() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get('category') ?? '';
   const [search, setSearch] = useState('');
@@ -48,7 +50,7 @@ export default function PortfolioPage() {
         if (!cancelled) setItems(res.items);
       })
       .catch(() => {
-        if (!cancelled) setError('We couldn’t load the portfolio right now — please try again shortly.');
+        if (!cancelled) setError(t('portfolio.error'));
       });
     return () => {
       cancelled = true;
@@ -56,7 +58,7 @@ export default function PortfolioPage() {
   }, [activeCategory, debouncedSearch]);
 
   const filters = useMemo(
-    () => [{ name: 'All', slug: '' }, ...categories.map((c) => ({ name: c.name, slug: c.slug }))],
+    () => [{ name: t('portfolio.all'), slug: '' }, ...categories.map((c) => ({ name: c.name, slug: c.slug }))],
     [categories],
   );
 
@@ -72,15 +74,14 @@ export default function PortfolioPage() {
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mb: 2 }}>
               <Box sx={{ width: 40, height: '1px', bgcolor: palette.wineBright }} />
               <Typography variant="overline" sx={{ color: palette.rose }}>
-                Our work
+                {t('portfolio.eyebrow')}
               </Typography>
             </Stack>
             <Typography variant="h1" sx={{ fontSize: { xs: '2.6rem', md: '4rem' }, mb: 2 }}>
-              The portfolio
+              {t('portfolio.title')}
             </Typography>
             <Typography variant="body1" sx={{ color: palette.ivoryMuted, maxWidth: 560 }}>
-              A collection of stories we’ve had the honour to preserve — every frame finished with
-              the master’s touch.
+              {t('portfolio.intro')}
             </Typography>
           </Reveal>
 
@@ -117,7 +118,7 @@ export default function PortfolioPage() {
             </Stack>
             <TextField
               size="small"
-              placeholder="Search projects…"
+              placeholder={t('portfolio.search')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               slotProps={{
@@ -162,12 +163,10 @@ export default function PortfolioPage() {
           {items !== null && items.length === 0 && !error && (
             <Box sx={{ textAlign: 'center', py: 12, border: `1px dashed ${palette.inkBorder}` }}>
               <Typography variant="h4" sx={{ color: palette.ivory, mb: 1.5 }}>
-                No stories here yet
+                {t('portfolio.emptyTitle')}
               </Typography>
               <Typography variant="body2" sx={{ color: palette.ivoryMuted }}>
-                {debouncedSearch || activeCategory
-                  ? 'Try a different search or category.'
-                  : 'New work is on its way — check back soon.'}
+                {debouncedSearch || activeCategory ? t('portfolio.emptyFiltered') : t('portfolio.emptyDefault')}
               </Typography>
             </Box>
           )}

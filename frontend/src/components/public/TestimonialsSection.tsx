@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { TESTIMONIALS } from '../../content';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
@@ -11,6 +12,7 @@ import SectionHeading from '../SectionHeading';
 import SectionDecor from './SectionDecor';
 
 export default function TestimonialsSection() {
+  const { t } = useTranslation();
   return (
     <Box component="section" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
       <SectionDecor sx={{ right: { xs: -40, md: 60 }, top: { xs: 10, md: -10 } }}>
@@ -18,7 +20,7 @@ export default function TestimonialsSection() {
       </SectionDecor>
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
-          <SectionHeading eyebrow="Kind words" title="What clients remember" align="center" />
+          <SectionHeading eyebrow={t('testimonials.eyebrow')} title={t('testimonials.title')} align="center" />
         </Reveal>
         {TESTIMONIALS.map((testimonial) => (
           <Reveal key={testimonial.name} delay={120}>
@@ -32,10 +34,10 @@ export default function TestimonialsSection() {
                 variant="h4"
                 sx={{ fontStyle: 'italic', color: palette.ivory, lineHeight: 1.45, fontSize: { xs: '1.5rem', md: '2rem' } }}
               >
-                “{testimonial.quote}”
+                “{t('testimonials.quote')}”
               </Typography>
               <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mt: 4 }}>
-                {testimonial.name} — {testimonial.role}
+                {testimonial.name} — {t('testimonials.role')}
               </Typography>
             </Box>
           </Reveal>

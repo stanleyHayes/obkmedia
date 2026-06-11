@@ -14,23 +14,26 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { BRAND, SOCIALS } from '../../content';
+import { BRAND } from '../../content';
 import { palette } from '../../theme';
+import LanguageSwitcher from '../LanguageSwitcher';
+import SocialLinks from './SocialLinks';
 import ThemeToggle from '../ThemeToggle';
 
 interface NavItem {
-  label: string;
+  key: 'home' | 'portfolio' | 'about' | 'services' | 'contact';
   to: string;
   hash: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', to: '/', hash: '' },
-  { label: 'Portfolio', to: '/portfolio', hash: '' },
-  { label: 'About', to: '/', hash: 'about' },
-  { label: 'Services', to: '/', hash: 'services' },
-  { label: 'Contact', to: '/', hash: 'contact' },
+  { key: 'home', to: '/', hash: '' },
+  { key: 'portfolio', to: '/portfolio', hash: '' },
+  { key: 'about', to: '/', hash: 'about' },
+  { key: 'services', to: '/', hash: 'services' },
+  { key: 'contact', to: '/', hash: 'contact' },
 ];
 
 const SECTION_IDS = ['about', 'services', 'contact'];
@@ -42,6 +45,7 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -150,17 +154,10 @@ export default function Navbar() {
                 </Link>
               </Stack>
               <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
-                {SOCIALS.map((social) => (
-                  <Link
-                    key={social.name}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener"
-                    sx={{ color: 'rgba(244,237,231,0.72)', fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', '&:hover': { color: palette.rose } }}
-                  >
-                    {social.name}
-                  </Link>
-                ))}
+                <SocialLinks color="rgba(244,237,231,0.78)" size={18} />
+                <Box sx={{ width: '1px', height: 16, bgcolor: 'rgba(244,237,231,0.2)' }} />
+                <LanguageSwitcher color="rgba(244,237,231,0.78)" />
+                <ThemeToggle sx={{ color: 'rgba(244,237,231,0.78)', p: 0.5 }} />
               </Stack>
             </Stack>
           </Container>
@@ -196,7 +193,7 @@ export default function Navbar() {
                 const active = isActive(item);
                 return (
                   <Typography
-                    key={item.label}
+                    key={item.key}
                     component="button"
                     onClick={() => go(item)}
                     sx={{
@@ -228,11 +225,10 @@ export default function Navbar() {
                       '&:hover::after': { transform: 'scaleX(1)' },
                     }}
                   >
-                    {item.label}
+                    {t(`nav.${item.key}`)}
                   </Typography>
                 );
               })}
-              <ThemeToggle sx={{ color: navText }} />
               <Button
                 variant="contained"
                 color="primary"
@@ -240,16 +236,17 @@ export default function Navbar() {
                 endIcon={<ArrowOutwardIcon sx={{ fontSize: '1rem !important' }} />}
                 onClick={() => go(NAV_ITEMS[4])}
               >
-                {BRAND.primaryCta}
+                {t('nav.book')}
               </Button>
             </Stack>
 
-            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
-              <ThemeToggle sx={{ color: navText }} />
-              <IconButton aria-label="Open menu" onClick={() => setOpen(true)} sx={{ color: navText }}>
-                <MenuIcon />
-              </IconButton>
-            </Box>
+            <IconButton
+              aria-label="Open menu"
+              onClick={() => setOpen(true)}
+              sx={{ display: { xs: 'inline-flex', md: 'none' }, color: navText }}
+            >
+              <MenuIcon />
+            </IconButton>
           </Toolbar>
         </Container>
 
@@ -296,7 +293,7 @@ export default function Navbar() {
         <Stack spacing={3.5} sx={{ mt: 7, px: 1, flex: 1 }}>
           {NAV_ITEMS.map((item, index) => (
             <Typography
-              key={item.label}
+              key={item.key}
               component="button"
               onClick={() => go(item)}
               sx={{
@@ -314,7 +311,7 @@ export default function Navbar() {
                 '&:hover': { color: palette.rose },
               }}
             >
-              {item.label}
+              {t(`nav.${item.key}`)}
             </Typography>
           ))}
         </Stack>
@@ -327,7 +324,7 @@ export default function Navbar() {
             onClick={() => go(NAV_ITEMS[4])}
             sx={{ mb: 3 }}
           >
-            {BRAND.primaryCta}
+            {t('nav.book')}
           </Button>
           <Stack spacing={1}>
             <Link href={`mailto:${BRAND.email}`} sx={{ color: palette.ivoryMuted, fontSize: '0.85rem', fontWeight: 300 }}>
@@ -337,19 +334,13 @@ export default function Navbar() {
               {BRAND.phoneIntl}
             </Link>
           </Stack>
-          <Stack direction="row" spacing={2.5} sx={{ mt: 2.5 }}>
-            {SOCIALS.map((social) => (
-              <Link
-                key={social.name}
-                href={social.url}
-                target="_blank"
-                rel="noopener"
-                sx={{ color: palette.ivoryMuted, fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', '&:hover': { color: palette.rose } }}
-              >
-                {social.name}
-              </Link>
-            ))}
-          </Stack>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3 }}>
+            <SocialLinks color={palette.ivoryMuted} />
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <LanguageSwitcher color={palette.ivoryMuted} />
+              <ThemeToggle sx={{ color: palette.ivoryMuted }} />
+            </Stack>
+          </Box>
         </Box>
       </Drawer>
     </>

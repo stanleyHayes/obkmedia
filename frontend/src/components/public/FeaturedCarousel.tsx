@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { publicApi } from '../../api/public';
 import type { Portfolio } from '../../api/types';
@@ -22,6 +23,7 @@ export default function FeaturedCarousel() {
   const [error, setError] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     let cancelled = false;
@@ -54,7 +56,7 @@ export default function FeaturedCarousel() {
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 3 }}>
           <Reveal>
-            <SectionHeading eyebrow="Featured work" title="Selected stories" />
+            <SectionHeading eyebrow={t('featured.eyebrow')} title={t('featured.title')} />
           </Reveal>
           <Stack direction="row" spacing={1} sx={{ mb: { xs: 5, md: 7 } }}>
             <IconButton aria-label="Scroll back" onClick={() => scrollBy(-1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
@@ -101,7 +103,7 @@ export default function FeaturedCarousel() {
         <Reveal>
           <Box sx={{ mt: 4, textAlign: 'center' }}>
             <Button variant="outlined" onClick={() => { navigate('/portfolio'); window.scrollTo({ top: 0 }); }}>
-              View full portfolio
+              {t('featured.viewFull')}
             </Button>
           </Box>
         </Reveal>

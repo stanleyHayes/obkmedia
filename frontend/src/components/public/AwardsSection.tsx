@@ -3,13 +3,17 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { AWARDS, AWARDS_QUOTE } from '../../content';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
 import SectionDecor from './SectionDecor';
 
+interface AwardItem { title: string; body: string }
+
 export default function AwardsSection() {
+  const { t } = useTranslation();
+  const awards = t('awards.items', { returnObjects: true }) as AwardItem[];
   return (
     <Box
       component="section"
@@ -29,7 +33,7 @@ export default function AwardsSection() {
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
-          <SectionHeading eyebrow="Recognition" title="Honoured for our craft" align="center" />
+          <SectionHeading eyebrow={t('awards.eyebrow')} title={t('awards.title')} align="center" />
         </Reveal>
 
         <Box
@@ -40,7 +44,7 @@ export default function AwardsSection() {
             mb: { xs: 7, md: 10 },
           }}
         >
-          {AWARDS.map((award, index) => (
+          {awards.map((award, index) => (
             <Reveal key={award.title} delay={index * 160}>
               <Box
                 sx={{
@@ -114,7 +118,7 @@ export default function AwardsSection() {
                 mt: 1,
               }}
             >
-              {AWARDS_QUOTE}
+              {t('awards.quote')}
             </Typography>
             <Box sx={{ width: 56, height: '1px', bgcolor: palette.rose, mx: 'auto', mt: 4 }} />
           </Box>

@@ -4,13 +4,17 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { SERVICES } from '../../content';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
 import SectionDecor from './SectionDecor';
 
+interface ServiceItem { title: string; description: string }
+
 export default function ServicesSection() {
+  const { t } = useTranslation();
+  const services = t('services.items', { returnObjects: true }) as ServiceItem[];
   const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
 
   return (
@@ -20,7 +24,7 @@ export default function ServicesSection() {
       </SectionDecor>
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
-          <SectionHeading eyebrow="What we do" title="Crafted services for every story" />
+          <SectionHeading eyebrow={t('services.eyebrow')} title={t('services.title')} />
         </Reveal>
         <Box
           sx={{
@@ -31,7 +35,7 @@ export default function ServicesSection() {
             borderLeft: `1px solid ${palette.inkBorder}`,
           }}
         >
-          {SERVICES.map((service, index) => (
+          {services.map((service, index) => (
             <Reveal key={service.title} delay={(index % 3) * 120}>
               <Box
                 sx={{
@@ -70,11 +74,10 @@ export default function ServicesSection() {
         <Reveal delay={200}>
           <Box sx={{ mt: 6, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 3 }}>
             <Typography variant="body2" sx={{ color: palette.ivoryMuted, maxWidth: 520 }}>
-              Bespoke packages are tailored to every story — request a quote and we’ll build the
-              right coverage for your day.
+              {t('services.packagesNote')}
             </Typography>
             <Button variant="outlined" endIcon={<ArrowForwardIcon />} onClick={scrollToContact}>
-              Request pricing
+              {t('services.requestPricing')}
             </Button>
           </Box>
         </Reveal>

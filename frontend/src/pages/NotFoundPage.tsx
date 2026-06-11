@@ -4,11 +4,13 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Seo from '../seo/Seo';
 import { palette } from '../theme';
 
 export default function NotFoundPage() {
+  const { t } = useTranslation();
   return (
     <>
       <Seo title="Page not found" />
@@ -49,21 +51,20 @@ export default function NotFoundPage() {
 
         <Container maxWidth="md" sx={{ position: 'relative', textAlign: 'center', py: { xs: 18, md: 12 } }}>
           <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mb: 2, letterSpacing: '0.32em' }}>
-            Error 404
+            {t('notFound.errorLabel')}
           </Typography>
           <Typography variant="h1" sx={{ fontSize: { xs: '2.6rem', md: '4.2rem' }, mb: 2.5 }}>
-            This frame is{' '}
+            {t('notFound.titlePre')}{' '}
             <Box component="em" sx={{ color: palette.rose, fontStyle: 'italic' }}>
-              empty
+              {t('notFound.titleEm')}
             </Box>
           </Typography>
           <Typography variant="body1" sx={{ color: palette.ivoryMuted, maxWidth: 460, mx: 'auto', mb: 5 }}>
-            The page you’re looking for doesn’t exist or has been moved. Let’s get you back to the
-            story.
+            {t('notFound.body')}
           </Typography>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center' }}>
             <Button variant="contained" size="large" component={RouterLink} to="/" onClick={() => window.scrollTo({ top: 0 })}>
-              Back to home
+              {t('notFound.backHome')}
             </Button>
             <Button
               variant="outlined"
@@ -73,7 +74,7 @@ export default function NotFoundPage() {
               to="/portfolio"
               onClick={() => window.scrollTo({ top: 0 })}
             >
-              View portfolio
+              {t('notFound.viewPortfolio')}
             </Button>
           </Stack>
         </Container>

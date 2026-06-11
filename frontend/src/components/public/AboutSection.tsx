@@ -2,22 +2,24 @@ import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { ABOUT, BRAND } from '../../content';
+import { useTranslation } from 'react-i18next';
+import { BRAND } from '../../content';
 import { palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
 import SectionDecor from './SectionDecor';
 
-const STATS = [
-  { value: `${BRAND.yearsExperience}+`, label: 'Years of experience' },
-  { value: 'Nationwide', label: 'Areas served' },
-  { value: '24 hrs', label: 'Always available' },
-];
-
 // Placeholder until the client's profile image is supplied.
 const ABOUT_IMAGE = 'https://picsum.photos/seed/obk-about/900/1200';
 
 export default function AboutSection() {
+  const { t } = useTranslation();
+  const paragraphs = [t('about.p1'), t('about.p2'), t('about.p3')];
+  const stats = [
+    { value: `${BRAND.yearsExperience}+`, label: t('about.statYears') },
+    { value: t('about.nationwide'), label: t('about.statAreas') },
+    { value: t('about.hours'), label: t('about.statHours') },
+  ];
   return (
     <Box component="section" id="about" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
       <SectionDecor sx={{ left: { xs: -50, md: -20 }, bottom: 30 }}>
@@ -59,9 +61,9 @@ export default function AboutSection() {
 
           <Box>
             <Reveal>
-              <SectionHeading eyebrow="About OBK MEDIA" title="Every moment has a story worth telling" />
+              <SectionHeading eyebrow={t('about.eyebrow')} title={t('about.title')} />
             </Reveal>
-            {ABOUT.story.map((paragraph, i) => (
+            {paragraphs.map((paragraph, i) => (
               <Reveal key={i} delay={i * 120}>
                 <Typography variant="body1" sx={{ color: palette.ivoryMuted, mb: 2.5 }}>
                   {paragraph}
@@ -73,12 +75,12 @@ export default function AboutSection() {
                 variant="h5"
                 sx={{ color: palette.rose, fontStyle: 'italic', my: 4, borderLeft: `2px solid ${palette.wine}`, pl: 3 }}
               >
-                “{ABOUT.difference}”
+                “{t('about.difference')}”
               </Typography>
             </Reveal>
             <Reveal delay={420}>
               <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, mt: 5 }}>
-                {STATS.map((stat) => (
+                {stats.map((stat) => (
                   <Box key={stat.label} sx={{ borderTop: `1px solid ${palette.inkBorder}`, pt: 2 }}>
                     <Typography variant="h4" sx={{ color: palette.ivory }}>
                       {stat.value}
@@ -104,20 +106,20 @@ export default function AboutSection() {
           <Reveal>
             <Box sx={{ border: `1px solid ${palette.inkBorder}`, p: { xs: 3.5, md: 5 } }}>
               <Typography variant="overline" sx={{ color: palette.rose }}>
-                Our Mission
+                {t('about.missionLabel')}
               </Typography>
               <Typography variant="h5" sx={{ mt: 1.5, color: palette.ivory }}>
-                {ABOUT.mission}
+                {t('about.mission')}
               </Typography>
             </Box>
           </Reveal>
           <Reveal delay={140}>
             <Box sx={{ border: `1px solid ${palette.inkBorder}`, p: { xs: 3.5, md: 5 } }}>
               <Typography variant="overline" sx={{ color: palette.rose }}>
-                Our Vision
+                {t('about.visionLabel')}
               </Typography>
               <Typography variant="h5" sx={{ mt: 1.5, color: palette.ivory }}>
-                {ABOUT.vision}
+                {t('about.vision')}
               </Typography>
             </Box>
           </Reveal>

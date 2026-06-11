@@ -7,23 +7,24 @@ import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { BRAND, SOCIALS } from '../../content';
 import { palette } from '../../theme';
 
 const EXPLORE = [
-  { label: 'Home', to: '/' },
-  { label: 'Portfolio', to: '/portfolio' },
-  { label: 'About', to: '/#about' },
-  { label: 'Services', to: '/#services' },
-  { label: 'Contact', to: '/#contact' },
-];
+  { key: 'home', to: '/' },
+  { key: 'portfolio', to: '/portfolio' },
+  { key: 'about', to: '/#about' },
+  { key: 'services', to: '/#services' },
+  { key: 'contact', to: '/#contact' },
+] as const;
 
 const LEGAL = [
-  { label: 'Privacy Policy', to: '/privacy' },
-  { label: 'Terms & Conditions', to: '/terms' },
-  { label: 'Image Copyright', to: '/terms' },
-];
+  { key: 'legalPrivacy', to: '/privacy' },
+  { key: 'legalTerms', to: '/terms' },
+  { key: 'legalCopyright', to: '/terms' },
+] as const;
 
 const linkSx = {
   color: palette.ivoryMuted,
@@ -36,6 +37,7 @@ const linkSx = {
 
 export default function Footer() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
@@ -78,9 +80,9 @@ export default function Footer() {
               {BRAND.tagline}
             </Typography>
             <Typography variant="h2" sx={{ fontSize: { xs: '2.3rem', md: '3.4rem' }, maxWidth: 640, lineHeight: 1.08 }}>
-              Let’s create something{' '}
+              {t('footer.cta')}{' '}
               <Box component="em" sx={{ color: palette.rose, fontStyle: 'italic' }}>
-                timeless
+                {t('footer.ctaEm')}
               </Box>
               .
             </Typography>
@@ -91,7 +93,7 @@ export default function Footer() {
             endIcon={<ArrowOutwardIcon />}
             onClick={() => navigate('/#contact')}
           >
-            {BRAND.primaryCta}
+            {t('nav.book')}
           </Button>
         </Box>
 
@@ -123,18 +125,18 @@ export default function Footer() {
 
           <Box>
             <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mb: 2.5 }}>
-              Explore
+              {t('footer.explore')}
             </Typography>
             <Stack spacing={1.5}>
               {EXPLORE.map((item) => (
                 <Link
-                  key={item.label}
+                  key={item.key}
                   component={RouterLink}
                   to={item.to}
                   onClick={() => item.to === '/' && window.scrollTo({ top: 0 })}
                   sx={linkSx}
                 >
-                  {item.label}
+                  {t(`nav.${item.key}`)}
                 </Link>
               ))}
             </Stack>
@@ -142,12 +144,12 @@ export default function Footer() {
 
           <Box>
             <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mb: 2.5 }}>
-              Legal
+              {t('footer.legal')}
             </Typography>
             <Stack spacing={1.5}>
               {LEGAL.map((item) => (
-                <Link key={item.label} component={RouterLink} to={item.to} onClick={toTop} sx={linkSx}>
-                  {item.label}
+                <Link key={item.key} component={RouterLink} to={item.to} onClick={toTop} sx={linkSx}>
+                  {t(`footer.${item.key}`)}
                 </Link>
               ))}
             </Stack>
@@ -155,7 +157,7 @@ export default function Footer() {
 
           <Box>
             <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mb: 2.5 }}>
-              Get in touch
+              {t('footer.getInTouch')}
             </Typography>
             <Stack spacing={1.5}>
               <Link href={`mailto:${BRAND.email}`} sx={linkSx}>
@@ -165,7 +167,7 @@ export default function Footer() {
                 {BRAND.phoneIntl}
               </Link>
               <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.08em' }}>
-                {BRAND.hours}
+                {t('contact.hours')}
               </Typography>
               <Stack direction="row" spacing={2.5} sx={{ pt: 1.5, flexWrap: 'wrap', rowGap: 1 }}>
                 {SOCIALS.map((social) => (
@@ -225,11 +227,11 @@ export default function Footer() {
           }}
         >
           <Typography variant="caption" sx={{ color: palette.ivoryMuted }}>
-            © {new Date().getFullYear()} {BRAND.name}. All rights reserved. Images may not be used without written permission.
+            © {new Date().getFullYear()} {BRAND.name}. {t('footer.rights')}
           </Typography>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <Typography variant="caption" sx={{ color: palette.ivoryMuted, fontStyle: 'italic', fontFamily: '"Cormorant Garamond", serif', fontSize: '0.95rem' }}>
-              The Master’s Touch You Need
+              {t('footer.masterTouch')}
             </Typography>
             <IconButton
               aria-label="Back to top"

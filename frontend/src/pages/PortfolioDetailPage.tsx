@@ -8,6 +8,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { ApiError } from '../api/client';
 import { publicApi } from '../api/public';
@@ -21,6 +22,7 @@ import Seo from '../seo/Seo';
 import { palette } from '../theme';
 
 export default function PortfolioDetailPage() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [item, setItem] = useState<Portfolio | null>(null);
@@ -63,13 +65,13 @@ export default function PortfolioDetailPage() {
     return (
       <Container maxWidth="md" sx={{ pt: 24, pb: 16, textAlign: 'center' }}>
         <Typography variant="h2" sx={{ mb: 2 }}>
-          Story not found
+          {t('detail.notFoundTitle')}
         </Typography>
         <Typography variant="body1" sx={{ color: palette.ivoryMuted, mb: 5 }}>
-          This portfolio item may have been unpublished or moved.
+          {t('detail.notFoundBody')}
         </Typography>
         <Button variant="outlined" component={RouterLink} to="/portfolio" startIcon={<ArrowBackIcon />}>
-          Back to portfolio
+          {t('detail.backToPortfolio')}
         </Button>
       </Container>
     );
@@ -78,7 +80,7 @@ export default function PortfolioDetailPage() {
   if (error) {
     return (
       <Container maxWidth="md" sx={{ pt: 24, pb: 16 }}>
-        <Alert severity="error">We couldn’t load this project right now — please try again shortly.</Alert>
+        <Alert severity="error">{t('detail.error')}</Alert>
       </Container>
     );
   }
@@ -138,7 +140,7 @@ export default function PortfolioDetailPage() {
 
       <Container maxWidth="xl" sx={{ py: { xs: 6, md: 10 } }}>
         <Button onClick={() => navigate('/portfolio')} startIcon={<ArrowBackIcon />} sx={{ color: palette.ivoryMuted, mb: 5, px: 0 }}>
-          All projects
+          {t('detail.allProjects')}
         </Button>
 
         {item && (
@@ -156,10 +158,10 @@ export default function PortfolioDetailPage() {
             </Box>
             <Box sx={{ border: `1px solid ${palette.inkBorder}`, p: 4, alignSelf: 'start' }}>
               <Typography variant="overline" sx={{ color: palette.rose }}>
-                Loved this story?
+                {t('detail.lovedEyebrow')}
               </Typography>
               <Typography variant="h5" sx={{ my: 2, color: palette.ivory }}>
-                Book a similar shoot with {BRAND.name}
+                {t('detail.bookSimilar')}
               </Typography>
               <Button variant="contained" fullWidth onClick={() => navigate('/#contact')}>
                 {BRAND.primaryCta}
@@ -210,7 +212,7 @@ export default function PortfolioDetailPage() {
           </Box>
         ) : (
           <Typography variant="body2" sx={{ color: palette.ivoryMuted, textAlign: 'center', py: 6 }}>
-            Gallery images coming soon.
+            {t('detail.galleryComingSoon')}
           </Typography>
         )}
 
@@ -218,10 +220,10 @@ export default function PortfolioDetailPage() {
         {related.length > 0 && (
           <Box sx={{ mt: { xs: 10, md: 14 } }}>
             <Typography variant="overline" sx={{ color: palette.rose }}>
-              More stories
+              {t('detail.relatedEyebrow')}
             </Typography>
             <Typography variant="h3" sx={{ mt: 1, mb: 5 }}>
-              Related projects
+              {t('detail.relatedTitle')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' }, gap: 4 }}>
               {related.map((rel) => (
