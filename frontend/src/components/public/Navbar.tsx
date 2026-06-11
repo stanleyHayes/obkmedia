@@ -1,20 +1,30 @@
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import CloseIcon from '@mui/icons-material/Close';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
+import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { BRAND } from '../../content';
+import { BRAND, SOCIALS } from '../../content';
 import { palette } from '../../theme';
 
-const NAV_ITEMS = [
+interface NavItem {
+  label: string;
+  to: string;
+  hash: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { label: 'Home', to: '/', hash: '' },
   { label: 'Portfolio', to: '/portfolio', hash: '' },
   { label: 'About', to: '/', hash: 'about' },
@@ -22,20 +32,60 @@ const NAV_ITEMS = [
   { label: 'Contact', to: '/', hash: 'contact' },
 ];
 
+const SECTION_IDS = ['about', 'services', 'contact'];
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const go = (item: (typeof NAV_ITEMS)[number]) => {
+  // Scroll-spy: highlight the nav item for the section currently in view.
+  useEffect(() => {
+    if (!isHome) {
+      setActiveSection('');
+      return;
+    }
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (sections.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+        else if (window.scrollY < 200) setActiveSection('');
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5] },
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [isHome]);
+
+  const isActive = (item: NavItem): boolean => {
+    if (item.to === '/portfolio') return location.pathname.startsWith('/portfolio');
+    if (item.hash) return isHome && activeSection === item.hash;
+    // Home
+    return isHome && activeSection === '';
+  };
+
+  const go = (item: NavItem) => {
     setOpen(false);
     if (item.hash) {
       if (location.pathname !== '/') {
@@ -55,25 +105,79 @@ export default function Navbar() {
         position="fixed"
         elevation={0}
         sx={{
-          bgcolor: scrolled ? 'rgba(11, 7, 9, 0.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-          borderBottom: scrolled ? `1px solid ${palette.inkBorder}` : '1px solid transparent',
-          transition: 'all 320ms ease',
+          bgcolor: scrolled ? 'rgba(11, 7, 9, 0.9)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(14px)' : 'none',
+          borderBottom: `1px solid ${scrolled ? palette.inkBorder : 'transparent'}`,
+          transition: 'all 360ms ease',
         }}
       >
+        {/* Top utility strip — collapses away on scroll */}
+        <Box
+          sx={{
+            overflow: 'hidden',
+            maxHeight: scrolled ? 0 : 44,
+            opacity: scrolled ? 0 : 1,
+            transition: 'all 360ms ease',
+            borderBottom: `1px solid rgba(223,169,201,0.12)`,
+          }}
+        >
+          <Container maxWidth="xl">
+            <Stack
+              direction="row"
+              sx={{
+                height: 44,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
+                <Link
+                  href={`mailto:${BRAND.email}`}
+                  sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: palette.ivoryMuted, fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
+                >
+                  <EmailOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.email}
+                </Link>
+                <Link
+                  href="tel:+233546175921"
+                  sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.75, color: palette.ivoryMuted, fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
+                >
+                  <PhoneOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.phoneIntl}
+                </Link>
+              </Stack>
+              <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
+                {SOCIALS.map((social) => (
+                  <Link
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener"
+                    sx={{ color: palette.ivoryMuted, fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', '&:hover': { color: palette.rose } }}
+                  >
+                    {social.name}
+                  </Link>
+                ))}
+              </Stack>
+            </Stack>
+          </Container>
+        </Box>
+
+        {/* Main bar */}
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ minHeight: { xs: 64, md: 84 }, justifyContent: 'space-between' }}>
+          <Toolbar
+            disableGutters
+            sx={{
+              minHeight: { xs: 62, md: scrolled ? 70 : 80 },
+              transition: 'min-height 360ms ease',
+              justifyContent: 'space-between',
+            }}
+          >
             <Box
               component={RouterLink}
               to="/"
               onClick={() => window.scrollTo({ top: 0 })}
               sx={{ textDecoration: 'none', lineHeight: 1 }}
             >
-              <Typography
-                variant="h5"
-                component="span"
-                sx={{ color: palette.ivory, letterSpacing: '0.16em', fontWeight: 600 }}
-              >
+              <Typography variant="h5" component="span" sx={{ color: palette.ivory, letterSpacing: '0.16em', fontWeight: 600 }}>
                 OBK
                 <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>
                   {' '}
@@ -82,43 +186,54 @@ export default function Navbar() {
               </Typography>
             </Box>
 
-            <Stack direction="row" spacing={4} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-              {NAV_ITEMS.map((item) => (
-                <Typography
-                  key={item.label}
-                  component="button"
-                  onClick={() => go(item)}
-                  sx={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: palette.ivory,
-                    fontFamily: '"Outfit", sans-serif',
-                    fontSize: '0.78rem',
-                    letterSpacing: '0.22em',
-                    textTransform: 'uppercase',
-                    fontWeight: 400,
-                    p: 0,
-                    position: 'relative',
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 0,
-                      bottom: -6,
-                      width: '100%',
-                      height: '1px',
-                      bgcolor: palette.rose,
-                      transform: 'scaleX(0)',
-                      transformOrigin: 'left',
-                      transition: 'transform 280ms ease',
-                    },
-                    '&:hover::after': { transform: 'scaleX(1)' },
-                  }}
-                >
-                  {item.label}
-                </Typography>
-              ))}
-              <Button variant="contained" color="primary" size="small" onClick={() => go(NAV_ITEMS[4])}>
+            <Stack direction="row" spacing={4.5} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              {NAV_ITEMS.map((item) => {
+                const active = isActive(item);
+                return (
+                  <Typography
+                    key={item.label}
+                    component="button"
+                    onClick={() => go(item)}
+                    sx={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: active ? palette.rose : palette.ivory,
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: '0.76rem',
+                      letterSpacing: '0.22em',
+                      textTransform: 'uppercase',
+                      fontWeight: 400,
+                      p: 0,
+                      position: 'relative',
+                      transition: 'color 240ms ease',
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: 0,
+                        bottom: -7,
+                        width: '100%',
+                        height: '1px',
+                        bgcolor: palette.rose,
+                        transform: active ? 'scaleX(1)' : 'scaleX(0)',
+                        transformOrigin: 'left',
+                        transition: 'transform 280ms ease',
+                      },
+                      '&:hover': { color: palette.rose },
+                      '&:hover::after': { transform: 'scaleX(1)' },
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                );
+              })}
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                endIcon={<ArrowOutwardIcon sx={{ fontSize: '1rem !important' }} />}
+                onClick={() => go(NAV_ITEMS[4])}
+              >
                 {BRAND.primaryCta}
               </Button>
             </Stack>
@@ -132,20 +247,48 @@ export default function Navbar() {
             </IconButton>
           </Toolbar>
         </Container>
+
+        {/* Wine scroll-progress line */}
+        <Box
+          aria-hidden
+          sx={{
+            height: '2px',
+            width: `${progress * 100}%`,
+            bgcolor: palette.wineBright,
+            opacity: scrolled ? 1 : 0,
+            transition: 'opacity 360ms ease',
+          }}
+        />
       </AppBar>
 
       <Drawer
         anchor="right"
         open={open}
         onClose={() => setOpen(false)}
-        slotProps={{ paper: { sx: { width: '100%', maxWidth: 360, bgcolor: palette.ink, p: 3 } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: '100%',
+              maxWidth: 380,
+              bgcolor: palette.ink,
+              backgroundImage: 'radial-gradient(ellipse at 80% 0%, rgba(95,5,58,0.35), transparent 60%)',
+              p: 3,
+              display: 'flex',
+              flexDirection: 'column',
+            },
+          },
+        }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ color: palette.ivory, letterSpacing: '0.14em' }}>
+            OBK <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>MEDIA</Box>
+          </Typography>
           <IconButton aria-label="Close menu" onClick={() => setOpen(false)} sx={{ color: palette.ivory }}>
             <CloseIcon />
           </IconButton>
         </Box>
-        <Stack spacing={4} sx={{ mt: 6, px: 2 }}>
+
+        <Stack spacing={3.5} sx={{ mt: 7, px: 1, flex: 1 }}>
           {NAV_ITEMS.map((item, index) => (
             <Typography
               key={item.label}
@@ -156,12 +299,13 @@ export default function Navbar() {
                 border: 'none',
                 cursor: 'pointer',
                 textAlign: 'left',
-                color: palette.ivory,
+                color: isActive(item) ? palette.rose : palette.ivory,
                 fontFamily: '"Cormorant Garamond", serif',
-                fontSize: '2rem',
+                fontSize: '2.1rem',
+                lineHeight: 1,
                 p: 0,
                 opacity: 0,
-                animation: `obk-fade-up 500ms ease forwards ${120 + index * 80}ms`,
+                animation: `obk-fade-up 500ms ease forwards ${120 + index * 70}ms`,
                 '&:hover': { color: palette.rose },
               }}
             >
@@ -169,6 +313,39 @@ export default function Navbar() {
             </Typography>
           ))}
         </Stack>
+
+        <Box sx={{ px: 1, pb: 1 }}>
+          <Button
+            fullWidth
+            variant="contained"
+            endIcon={<ArrowOutwardIcon />}
+            onClick={() => go(NAV_ITEMS[4])}
+            sx={{ mb: 3 }}
+          >
+            {BRAND.primaryCta}
+          </Button>
+          <Stack spacing={1}>
+            <Link href={`mailto:${BRAND.email}`} sx={{ color: palette.ivoryMuted, fontSize: '0.85rem', fontWeight: 300 }}>
+              {BRAND.email}
+            </Link>
+            <Link href="tel:+233546175921" sx={{ color: palette.ivoryMuted, fontSize: '0.85rem', fontWeight: 300 }}>
+              {BRAND.phoneIntl}
+            </Link>
+          </Stack>
+          <Stack direction="row" spacing={2.5} sx={{ mt: 2.5 }}>
+            {SOCIALS.map((social) => (
+              <Link
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener"
+                sx={{ color: palette.ivoryMuted, fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', '&:hover': { color: palette.rose } }}
+              >
+                {social.name}
+              </Link>
+            ))}
+          </Stack>
+        </Box>
       </Drawer>
     </>
   );
