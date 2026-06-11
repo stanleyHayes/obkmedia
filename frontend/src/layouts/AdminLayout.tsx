@@ -40,6 +40,7 @@ import type { Permission } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import NotificationBell from '../components/admin/NotificationBell';
 import SplashScreen from '../components/SplashScreen';
+import ThemeToggle from '../components/ThemeToggle';
 import { palette } from '../theme';
 
 const DRAWER_WIDTH = 256;
@@ -400,6 +401,7 @@ export default function AdminLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" sx={{ flex: 1 }}>OBK Admin</Typography>
+          <ThemeToggle />
           {can('messages.view') && <NotificationBell />}
         </Toolbar>
       </AppBar>
@@ -446,6 +448,7 @@ export default function AdminLayout() {
               Signed in as <Box component="span" sx={{ color: palette.ivory }}>{admin.fullName}</Box>
             </Typography>
           </Tooltip>
+          <ThemeToggle />
           {can('messages.view') && <NotificationBell />}
         </Toolbar>
         <Outlet />

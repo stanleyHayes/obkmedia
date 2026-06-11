@@ -19,7 +19,7 @@ export default function SectionDecor({ children, sx }: SectionDecorProps) {
       aria-hidden
       sx={{
         position: 'absolute',
-        color: 'rgba(244, 237, 231, 0.04)',
+        color: 'var(--obk-decor)',
         pointerEvents: 'none',
         lineHeight: 0,
         zIndex: 0,

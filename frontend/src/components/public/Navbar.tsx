@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { BRAND, SOCIALS } from '../../content';
 import { palette } from '../../theme';
+import ThemeToggle from '../ThemeToggle';
 
 interface NavItem {
   label: string;
@@ -99,13 +100,17 @@ export default function Navbar() {
     }
   };
 
+  // Over the (always dark) hero the text must stay light in both themes;
+  // once scrolled onto the page background it follows the active theme.
+  const navText = scrolled ? palette.ivory : '#f4ede7';
+
   return (
     <>
       <AppBar
         position="fixed"
         elevation={0}
         sx={{
-          bgcolor: scrolled ? 'rgba(11, 7, 9, 0.9)' : 'transparent',
+          bgcolor: scrolled ? palette.scrim : 'transparent',
           backdropFilter: scrolled ? 'blur(14px)' : 'none',
           borderBottom: `1px solid ${scrolled ? palette.inkBorder : 'transparent'}`,
           transition: 'all 360ms ease',
@@ -130,16 +135,16 @@ export default function Navbar() {
                 justifyContent: 'space-between',
               }}
             >
-              <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
+              <Stack direction="row" spacing={3} sx={{ alignItems: 'center', color: 'rgba(244,237,231,0.72)' }}>
                 <Link
                   href={`mailto:${BRAND.email}`}
-                  sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: palette.ivoryMuted, fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
+                  sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
                 >
                   <EmailOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.email}
                 </Link>
                 <Link
                   href="tel:+233546175921"
-                  sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.75, color: palette.ivoryMuted, fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
+                  sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: palette.rose } }}
                 >
                   <PhoneOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.phoneIntl}
                 </Link>
@@ -151,7 +156,7 @@ export default function Navbar() {
                     href={social.url}
                     target="_blank"
                     rel="noopener"
-                    sx={{ color: palette.ivoryMuted, fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', '&:hover': { color: palette.rose } }}
+                    sx={{ color: 'rgba(244,237,231,0.72)', fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase', '&:hover': { color: palette.rose } }}
                   >
                     {social.name}
                   </Link>
@@ -177,7 +182,7 @@ export default function Navbar() {
               onClick={() => window.scrollTo({ top: 0 })}
               sx={{ textDecoration: 'none', lineHeight: 1 }}
             >
-              <Typography variant="h5" component="span" sx={{ color: palette.ivory, letterSpacing: '0.16em', fontWeight: 600 }}>
+              <Typography variant="h5" component="span" sx={{ color: navText, letterSpacing: '0.16em', fontWeight: 600 }}>
                 OBK
                 <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>
                   {' '}
@@ -198,7 +203,7 @@ export default function Navbar() {
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      color: active ? palette.rose : palette.ivory,
+                      color: active ? palette.rose : navText,
                       fontFamily: '"Outfit", sans-serif',
                       fontSize: '0.76rem',
                       letterSpacing: '0.22em',
@@ -227,6 +232,7 @@ export default function Navbar() {
                   </Typography>
                 );
               })}
+              <ThemeToggle sx={{ color: navText }} />
               <Button
                 variant="contained"
                 color="primary"
@@ -238,13 +244,12 @@ export default function Navbar() {
               </Button>
             </Stack>
 
-            <IconButton
-              aria-label="Open menu"
-              onClick={() => setOpen(true)}
-              sx={{ display: { xs: 'inline-flex', md: 'none' }, color: palette.ivory }}
-            >
-              <MenuIcon />
-            </IconButton>
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
+              <ThemeToggle sx={{ color: navText }} />
+              <IconButton aria-label="Open menu" onClick={() => setOpen(true)} sx={{ color: navText }}>
+                <MenuIcon />
+              </IconButton>
+            </Box>
           </Toolbar>
         </Container>
 

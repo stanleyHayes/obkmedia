@@ -1,30 +1,45 @@
+/* Dark defaults — ThemeModeProvider overrides these on <html> per mode. */
+:root {
+  --obk-ink: #0b0709;
+  --obk-ink-raised: #150d12;
+  --obk-ink-border: rgba(223, 169, 201, 0.14);
+  --obk-wine: #5f053a;
+  --obk-wine-bright: #8e1b63;
+  --obk-rose: #dfa9c9;
+  --obk-ivory: #f4ede7;
+  --obk-ivory-muted: #b9aab3;
+  --obk-decor: rgba(244, 237, 231, 0.05);
+  --obk-scrim: rgba(11, 7, 9, 0.9);
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background-color: #0b0709;
+  background-color: var(--obk-ink);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 360ms ease;
 }
 
 ::selection {
-  background: #5f053a;
+  background: var(--obk-wine);
   color: #f4ede7;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
-  background: #0b0709;
+  background: var(--obk-ink);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a1a23;
-  border: 2px solid #0b0709;
+  background: var(--obk-wine);
+  border: 2px solid var(--obk-ink);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5f053a;
+  background: var(--obk-wine-bright);
 }
 
 /* Film-grain overlay applied via .obk-grain on the app shell */

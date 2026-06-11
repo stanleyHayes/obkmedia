@@ -45,7 +45,7 @@ export default function Footer() {
         position: 'relative',
         overflow: 'hidden',
         borderTop: `1px solid ${palette.inkBorder}`,
-        background: `linear-gradient(180deg, ${palette.ink} 0%, #120a0f 100%)`,
+        background: `linear-gradient(180deg, ${palette.ink} 0%, ${palette.inkRaised} 100%)`,
       }}
     >
       {/* Wine accent hairline across the very top */}
