@@ -175,6 +175,7 @@ export const en = {
     notFoundBody: 'This portfolio item may have been unpublished or moved.',
     backToPortfolio: 'Back to portfolio',
     error: 'We couldn’t load this project right now — please try again shortly.',
+    for: 'For',
   },
   notFound: {
     errorLabel: 'Error 404',
@@ -198,6 +199,23 @@ export const en = {
     'Collaboration',
   ],
   budgetRanges: ['Under GH₵ 2,000', 'GH₵ 2,000 – 5,000', 'GH₵ 5,000 – 10,000', 'GH₵ 10,000+', 'Not sure yet'],
+  seo: {
+    portfolioTitle: 'Portfolio',
+    portfolioDescription:
+      'Explore OBK MEDIA’s portfolio — weddings, studio portraits, events, and fashion photography across Ghana.',
+    notFound: 'Page not found',
+  },
+  a11y: {
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    scrollBack: 'Scroll back',
+    scrollForward: 'Scroll forward',
+    backToTop: 'Back to top',
+    close: 'Close',
+    prevImage: 'Previous image',
+    nextImage: 'Next image',
+    gallery: 'Image gallery viewer',
+  },
 };
 
 export const fr: typeof en = {
@@ -377,6 +395,7 @@ export const fr: typeof en = {
     notFoundBody: 'Ce projet a peut-être été dépublié ou déplacé.',
     backToPortfolio: 'Retour au portfolio',
     error: 'Impossible de charger ce projet pour le moment — réessayez sous peu.',
+    for: 'Pour',
   },
   notFound: {
     errorLabel: 'Erreur 404',
@@ -400,4 +419,21 @@ export const fr: typeof en = {
     'Collaboration',
   ],
   budgetRanges: ['Moins de 2 000 GH₵', '2 000 – 5 000 GH₵', '5 000 – 10 000 GH₵', '10 000 GH₵ et plus', 'Pas encore sûr(e)'],
+  seo: {
+    portfolioTitle: 'Portfolio',
+    portfolioDescription:
+      'Découvrez le portfolio d’OBK MEDIA — mariages, portraits studio, événements et photographie de mode à travers le Ghana.',
+    notFound: 'Page introuvable',
+  },
+  a11y: {
+    openMenu: 'Ouvrir le menu',
+    closeMenu: 'Fermer le menu',
+    scrollBack: 'Défiler en arrière',
+    scrollForward: 'Défiler en avant',
+    backToTop: 'Retour en haut',
+    close: 'Fermer',
+    prevImage: 'Image précédente',
+    nextImage: 'Image suivante',
+    gallery: 'Visionneuse de galerie',
+  },
 };

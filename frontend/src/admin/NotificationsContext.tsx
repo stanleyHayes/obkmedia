@@ -31,8 +31,11 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const [count, setCount] = useState(0);
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [latest, setLatest] = useState<NotificationItem | null>(null);
-  // Track the newest id we've already seen so we only toast genuinely new ones.
-  const seenNewestId = useRef<string | null>(null);
+  // Watermark of the newest createdAt we've seen. Using a monotonic timestamp
+  // (not just the newest id) prevents a false toast when marking a message read
+  // re-exposes an OLDER unread item as items[0]; only genuinely newer arrivals
+  // (createdAt beyond the watermark) trigger the toast.
+  const seenNewestAt = useRef<number>(0);
   const primed = useRef(false);
 
   const refresh = useCallback(() => {
@@ -42,16 +45,17 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       .then((res) => {
         setCount(res.count);
         setItems(res.items);
-        const newest = res.items[0];
+        const maxAt = res.items.reduce((m, i) => Math.max(m, Date.parse(i.createdAt) || 0), 0);
         if (!primed.current) {
-          // First load: remember state without toasting historical messages.
-          seenNewestId.current = newest?.id ?? null;
+          // First load: record the watermark without toasting historical messages.
+          seenNewestAt.current = maxAt;
           primed.current = true;
           return;
         }
-        if (newest && newest.id !== seenNewestId.current) {
+        if (maxAt > seenNewestAt.current) {
+          const newest = res.items.find((i) => (Date.parse(i.createdAt) || 0) === maxAt) ?? res.items[0];
           setLatest(newest);
-          seenNewestId.current = newest.id;
+          seenNewestAt.current = maxAt;
         }
       })
       .catch(() => {});

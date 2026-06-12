@@ -13,7 +13,7 @@ export default function NotFoundPage() {
   const { t } = useTranslation();
   return (
     <>
-      <Seo title="Page not found" />
+      <Seo title={t('notFound.errorLabel')} />
       <Box
         sx={{
           position: 'relative',
@@ -38,10 +38,7 @@ export default function NotFoundPage() {
             fontSize: 'clamp(14rem, 42vw, 40rem)',
             lineHeight: 1,
             letterSpacing: '0.05em',
-            color: 'transparent',
-            background: 'linear-gradient(180deg, rgba(223,169,201,0.10), rgba(95,5,58,0))',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
+            color: palette.ghost,
             userSelect: 'none',
             pointerEvents: 'none',
           }}

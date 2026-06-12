@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { PortfolioImage } from '../../api/types';
 import { onDark } from '../../theme';
 import Watermark from './Watermark';
@@ -18,6 +19,7 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) {
+  const { t } = useTranslation();
   const open = index !== null;
   const current = open ? images[index] : undefined;
 
@@ -44,7 +46,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
   if (!current) return null;
 
   return (
-    <Modal open={open} onClose={onClose} aria-label="Image gallery viewer">
+    <Modal open={open} onClose={onClose} aria-label={t('a11y.gallery')}>
       <Box
         sx={{
           position: 'fixed',
@@ -58,7 +60,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
         onClick={onClose}
       >
         <IconButton
-          aria-label="Close"
+          aria-label={t('a11y.close')}
           onClick={onClose}
           sx={{ position: 'absolute', top: 16, right: 16, color: onDark.ivory, zIndex: 2 }}
         >
@@ -66,7 +68,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
         </IconButton>
 
         <IconButton
-          aria-label="Previous image"
+          aria-label={t('a11y.prevImage')}
           onClick={(e) => {
             e.stopPropagation();
             prev();
@@ -105,7 +107,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }: Lightbo
         </Box>
 
         <IconButton
-          aria-label="Next image"
+          aria-label={t('a11y.nextImage')}
           onClick={(e) => {
             e.stopPropagation();
             next();

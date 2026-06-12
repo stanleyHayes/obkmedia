@@ -247,7 +247,7 @@ export default function Navbar() {
             </Stack>
 
             <IconButton
-              aria-label="Open menu"
+              aria-label={t('a11y.openMenu')}
               onClick={() => setOpen(true)}
               sx={{ display: { xs: 'inline-flex', md: 'none' }, color: navText }}
             >
@@ -291,7 +291,7 @@ export default function Navbar() {
           <Typography variant="h6" sx={{ color: palette.ivory, letterSpacing: '0.14em' }}>
             OBK <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>MEDIA</Box>
           </Typography>
-          <IconButton aria-label="Close menu" onClick={() => setOpen(false)} sx={{ color: palette.ivory }}>
+          <IconButton aria-label={t('a11y.closeMenu')} onClick={() => setOpen(false)} sx={{ color: palette.ivory }}>
             <CloseIcon />
           </IconButton>
         </Box>

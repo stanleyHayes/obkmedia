@@ -223,10 +223,7 @@ export default function Footer() {
             lineHeight: 0.8,
             fontSize: 'clamp(3.5rem, 17vw, 16rem)',
             letterSpacing: '0.04em',
-            color: 'transparent',
-            background: `linear-gradient(180deg, rgba(223,169,201,0.12), rgba(95,5,58,0))`,
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
+            color: palette.ghost,
             userSelect: 'none',
             pointerEvents: 'none',
             mb: { xs: -1, md: -3 },
@@ -258,7 +255,7 @@ export default function Footer() {
               {t('footer.masterTouch')}
             </Typography>
             <IconButton
-              aria-label="Back to top"
+              aria-label={t('a11y.backToTop')}
               onClick={toTop}
               size="small"
               sx={{

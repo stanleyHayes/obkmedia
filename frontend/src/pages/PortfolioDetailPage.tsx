@@ -22,7 +22,7 @@ import Seo from '../seo/Seo';
 import { onDark, palette } from '../theme';
 
 export default function PortfolioDetailPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [item, setItem] = useState<Portfolio | null>(null);
@@ -91,9 +91,12 @@ export default function PortfolioDetailPage() {
         category,
         item.location,
         item.shootDate
-          ? new Date(item.shootDate).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+          ? new Date(item.shootDate).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-GB', {
+              month: 'long',
+              year: 'numeric',
+            })
           : null,
-        item.clientName ? `For ${item.clientName}` : null,
+        item.clientName ? `${t('detail.for')} ${item.clientName}` : null,
       ].filter(Boolean)
     : [];
 

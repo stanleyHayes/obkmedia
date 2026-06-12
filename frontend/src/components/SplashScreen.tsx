@@ -45,7 +45,7 @@ export default function SplashScreen({ fullscreen = true }: SplashScreenProps) {
       >
         OBK MEDIA
       </Box>
-      <Box sx={{ position: 'relative', width: 160, height: '2px', bgcolor: 'rgba(244,237,231,0.12)', overflow: 'hidden' }}>
+      <Box sx={{ position: 'relative', width: 160, height: '2px', bgcolor: palette.ghost, overflow: 'hidden' }}>
         <Box
           sx={{
             position: 'absolute',

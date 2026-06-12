@@ -65,8 +65,8 @@ export default function PortfolioPage() {
   return (
     <>
       <Seo
-        title="Portfolio"
-        description="Explore OBK MEDIA's portfolio — weddings, studio portraits, events, and fashion photography across Ghana."
+        title={t('seo.portfolioTitle')}
+        description={t('seo.portfolioDescription')}
       />
       <Box sx={{ pt: { xs: 16, md: 22 }, pb: { xs: 10, md: 14 } }}>
         <Container maxWidth="xl">

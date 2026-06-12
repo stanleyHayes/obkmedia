@@ -59,10 +59,10 @@ export default function FeaturedCarousel() {
             <SectionHeading eyebrow={t('featured.eyebrow')} title={t('featured.title')} />
           </Reveal>
           <Stack direction="row" spacing={1} sx={{ mb: { xs: 5, md: 7 } }}>
-            <IconButton aria-label="Scroll back" onClick={() => scrollBy(-1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
+            <IconButton aria-label={t('a11y.scrollBack')} onClick={() => scrollBy(-1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
               <ArrowBackIcon fontSize="small" />
             </IconButton>
-            <IconButton aria-label="Scroll forward" onClick={() => scrollBy(1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
+            <IconButton aria-label={t('a11y.scrollForward')} onClick={() => scrollBy(1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
               <ArrowForwardIcon fontSize="small" />
             </IconButton>
           </Stack>

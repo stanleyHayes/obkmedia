@@ -54,7 +54,7 @@ export default function ServicesSection() {
                   sx={{
                     fontFamily: '"Cormorant Garamond", serif',
                     fontSize: '2.6rem',
-                    color: 'rgba(244, 237, 231, 0.16)',
+                    color: palette.ghost,
                     transition: 'color 360ms ease',
                     lineHeight: 1,
                   }}

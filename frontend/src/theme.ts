@@ -19,6 +19,7 @@ export const TOKENS: Record<ThemeMode, Record<string, string>> = {
     ivory: '#f4ede7',
     ivoryMuted: '#b9aab3',
     decor: 'rgba(244, 237, 231, 0.05)',
+    ghost: 'rgba(244, 237, 231, 0.16)',
     scrim: 'rgba(11, 7, 9, 0.9)',
     inputBg: 'rgba(244, 237, 231, 0.02)',
     outlineBorder: 'rgba(244, 237, 231, 0.4)',
@@ -33,6 +34,7 @@ export const TOKENS: Record<ThemeMode, Record<string, string>> = {
     ivory: '#221319',
     ivoryMuted: '#7a6670',
     decor: 'rgba(95, 5, 58, 0.05)',
+    ghost: 'rgba(95, 5, 58, 0.14)',
     scrim: 'rgba(246, 241, 236, 0.88)',
     inputBg: 'rgba(95, 5, 58, 0.02)',
     outlineBorder: 'rgba(34, 19, 25, 0.3)',
@@ -62,6 +64,7 @@ export const palette = {
   ivory: 'var(--obk-ivory)',
   ivoryMuted: 'var(--obk-ivory-muted)',
   decor: 'var(--obk-decor)',
+  ghost: 'var(--obk-ghost)',
   scrim: 'var(--obk-scrim)',
 } as const;
 
@@ -78,6 +81,7 @@ export function cssVarsFor(mode: ThemeMode): Record<string, string> {
     '--obk-ivory': t.ivory,
     '--obk-ivory-muted': t.ivoryMuted,
     '--obk-decor': t.decor,
+    '--obk-ghost': t.ghost,
     '--obk-scrim': t.scrim,
   };
 }
