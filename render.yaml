@@ -9,7 +9,9 @@ services:
     runtime: node
     rootDir: backend
     plan: free
-    buildCommand: npm ci && npm run build
+    # NODE_ENV=production makes npm omit devDependencies, but the TypeScript
+    # compiler and all @types/* live there — so force them in for the build.
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
