@@ -14,11 +14,11 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
+import Skeleton from '@mui/material/Skeleton';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
@@ -34,7 +34,7 @@ import type {
   SiteSettings,
 } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
-import { PageHeading, Section } from '../../components/admin/SettingsSection';
+import { Section } from '../../components/admin/SettingsSection';
 import { SOCIAL_PLATFORMS } from '../../components/public/SocialLinks';
 import { BRAND, SOCIALS } from '../../content';
 import { en } from '../../i18n/resources';
@@ -262,9 +262,9 @@ function ImageField({
               size="small"
               disabled={disabled || busy}
               onClick={() => inputRef.current?.click()}
-              startIcon={busy ? <CircularProgress size={15} /> : <ImageOutlinedIcon />}
+              startIcon={<ImageOutlinedIcon />}
             >
-              {url ? 'Replace' : 'Upload'}
+              {busy ? 'Uploading…' : url ? 'Replace' : 'Upload'}
             </Button>
             {url && (
               <Button size="small" color="inherit" disabled={disabled || busy} onClick={() => onUploaded('', '')}>
@@ -310,6 +310,59 @@ const RowTools = ({
   </Stack>
 );
 
+const SECTION_LINKS = [
+  { id: 'branding', label: 'Branding', helper: 'Logos and tagline' },
+  { id: 'hero', label: 'Hero', helper: 'Headline and cover media' },
+  { id: 'about', label: 'About', helper: 'Story and portrait' },
+  { id: 'stats', label: 'Stats', helper: 'Public proof points' },
+  { id: 'mission', label: 'Mission', helper: 'Positioning copy' },
+  { id: 'services', label: 'Services', helper: 'What OBK offers' },
+  { id: 'pricing', label: 'Pricing', helper: 'Packages and tiers' },
+  { id: 'contact', label: 'Contact', helper: 'Email, phone, WhatsApp' },
+  { id: 'location', label: 'Location', helper: 'Studio and coverage' },
+  { id: 'socials', label: 'Socials', helper: 'Public profile links' },
+] as const;
+
+const skeletonSx = { bgcolor: palette.decor } as const;
+
+function SettingsPageSkeleton() {
+  return (
+    <Box sx={{ pb: 12, width: '100%' }}>
+      <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 3, md: 4.5 }, mb: 3 }}>
+        <Skeleton variant="rounded" width={160} height={24} sx={{ ...skeletonSx, mb: 2 }} />
+        <Skeleton variant="text" width="54%" height={68} sx={skeletonSx} />
+        <Skeleton variant="text" width="70%" height={24} sx={skeletonSx} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, mt: 4 }}>
+          {Array.from({ length: 3 }, (_, i) => (
+            <Skeleton key={i} variant="rounded" height={82} sx={skeletonSx} />
+          ))}
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', xl: '270px minmax(0, 1fr)' }, gap: 3, alignItems: 'start' }}>
+        <Box sx={{ display: { xs: 'none', xl: 'block' }, border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: 2.5 }}>
+          <Skeleton variant="text" width="52%" height={26} sx={skeletonSx} />
+          {Array.from({ length: 7 }, (_, i) => (
+            <Skeleton key={i} variant="rounded" height={42} sx={{ ...skeletonSx, mt: 1.4 }} />
+          ))}
+        </Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, minmax(0, 1fr))' }, gap: 3 }}>
+          {Array.from({ length: 8 }, (_, i) => (
+            <Box key={i} sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 3.5 }, minHeight: i % 3 === 0 ? 330 : 240 }}>
+              <Skeleton variant="rounded" width={42} height={42} sx={{ ...skeletonSx, mb: 2 }} />
+              <Skeleton variant="text" width="42%" height={32} sx={skeletonSx} />
+              <Skeleton variant="text" width="72%" height={18} sx={{ ...skeletonSx, mb: 3 }} />
+              <Skeleton variant="rounded" height={54} sx={skeletonSx} />
+              <Skeleton variant="rounded" height={54} sx={{ ...skeletonSx, mt: 1.5 }} />
+              {i % 2 === 0 && <Skeleton variant="rounded" height={92} sx={{ ...skeletonSx, mt: 1.5 }} />}
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
 export default function SettingsPage() {
   const { can } = useAuth();
   const editable = can('settings.manage');
@@ -329,13 +382,7 @@ export default function SettingsPage() {
     return <Alert severity="warning">You don’t have access to site content settings.</Alert>;
   }
   if (loadError) return <Alert severity="error">Couldn’t load site settings. Please refresh.</Alert>;
-  if (!form) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (!form) return <SettingsPageSkeleton />;
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => setForm((f) => (f ? { ...f, [key]: value } : f));
 
@@ -367,15 +414,97 @@ export default function SettingsPage() {
   );
 
   return (
-    <Box sx={{ pb: 12 }}>
-      <PageHeading
-        title="Site content"
-        subtitle="Edit the public website — branding, hero, about, services, pricing, contact, and socials. Blank text fields fall back to the built-in defaults; saving publishes immediately."
-      />
+    <Box sx={{ pb: 12, width: '100%' }}>
+      <Box
+        sx={{
+          border: `1px solid ${palette.inkBorder}`,
+          bgcolor: palette.inkRaised,
+          backgroundImage: `linear-gradient(135deg, ${palette.decor}, transparent 58%)`,
+          p: { xs: 3, md: 4.5 },
+          mb: 3,
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1.35fr) minmax(320px, 0.65fr)' },
+          gap: { xs: 3, lg: 4 },
+          alignItems: 'end',
+        }}
+      >
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="caption" sx={{ color: palette.rose, letterSpacing: '0.18em', textTransform: 'uppercase' }}>
+            Public website controls
+          </Typography>
+          <Typography variant="h2" sx={{ mt: 1, fontSize: { xs: '2.35rem', md: '3.6rem' }, lineHeight: 1 }}>
+            Site content
+          </Typography>
+          <Typography variant="body1" sx={{ color: palette.ivoryMuted, maxWidth: 760, mt: 2 }}>
+            Edit the public website — branding, hero, about, services, pricing, contact, and socials. Blank text fields fall back to the built-in defaults; saving publishes immediately.
+          </Typography>
+        </Box>
 
-      <Stack spacing={4} sx={{ maxWidth: 880 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, minmax(0, 1fr))', lg: '1fr' }, gap: 1.5 }}>
+          {[
+            { label: 'Sections', value: SECTION_LINKS.length, helper: 'editable areas' },
+            { label: 'Mode', value: editable ? 'Live edit' : 'Read only', helper: editable ? 'publish on save' : 'permission limited' },
+            { label: 'Fallbacks', value: 'On', helper: 'defaults fill blanks' },
+          ].map((item) => (
+            <Box key={item.label} sx={{ border: `1px solid ${palette.inkBorder}`, p: 2, bgcolor: 'rgba(255,255,255,0.03)' }}>
+              <Typography sx={{ color: palette.rose, fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+                {item.label}
+              </Typography>
+              <Typography variant="h5" sx={{ color: palette.ivory, mt: 0.5 }}>
+                {item.value}
+              </Typography>
+              <Typography variant="caption" sx={{ color: palette.ivoryMuted }}>
+                {item.helper}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', xl: '270px minmax(0, 1fr)' }, gap: 3, alignItems: 'start', width: '100%' }}>
+        <Box
+          sx={{
+            display: { xs: 'none', xl: 'block' },
+            position: 'sticky',
+            top: 24,
+            border: `1px solid ${palette.inkBorder}`,
+            bgcolor: palette.inkRaised,
+            p: 2.5,
+          }}
+        >
+          <Typography sx={{ color: palette.rose, fontSize: '0.68rem', letterSpacing: '0.16em', textTransform: 'uppercase', mb: 2 }}>
+            Settings map
+          </Typography>
+          <Stack spacing={0.75}>
+            {SECTION_LINKS.map((item, index) => (
+              <Box
+                key={item.id}
+                component="a"
+                href={`#${item.id}`}
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: '28px minmax(0, 1fr)',
+                  gap: 1.2,
+                  p: 1.2,
+                  color: palette.ivory,
+                  textDecoration: 'none',
+                  border: `1px solid transparent`,
+                  '&:hover': { borderColor: palette.inkBorder, bgcolor: palette.decor },
+                }}
+              >
+                <Typography sx={{ color: palette.rose, fontSize: '0.68rem', letterSpacing: '0.1em' }}>{String(index + 1).padStart(2, '0')}</Typography>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography sx={{ fontSize: '0.86rem', fontWeight: 600 }}>{item.label}</Typography>
+                  <Typography sx={{ color: palette.ivoryMuted, fontSize: '0.72rem', lineHeight: 1.35 }}>{item.helper}</Typography>
+                </Box>
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, minmax(0, 1fr))' }, gap: 3, minWidth: 0, alignItems: 'start' }}>
         {/* Branding */}
-        <Section icon={<BadgeOutlinedIcon />} title="Branding & logos" subtitle="Brand name, tagline, and theme-specific logos.">
+        <Section id="branding" icon={<BadgeOutlinedIcon />} title="Branding & logos" subtitle="Brand name, tagline, and theme-specific logos." sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={3}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               {textField('brandName', 'Brand name', BRAND.name)}
@@ -414,7 +543,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Hero */}
-        <Section icon={<ImageOutlinedIcon />} title="Hero section" subtitle="The headline, intro, and background image at the top of the homepage.">
+        <Section id="hero" icon={<ImageOutlinedIcon />} title="Hero section" subtitle="The headline, intro, and background image at the top of the homepage." sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={3}>
             {textField('heroHeadline', 'Headline', BRAND.heroHeadline)}
             {textField('heroSubheadline', 'Sub-headline', BRAND.heroSubheadline, true)}
@@ -429,7 +558,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* About */}
-        <Section icon={<InfoOutlinedIcon />} title="About" subtitle="The story, portrait image, and signature quote.">
+        <Section id="about" icon={<InfoOutlinedIcon />} title="About" subtitle="The story, portrait image, and signature quote." sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={3}>
             <ImageField
               specKey="about"
@@ -472,16 +601,8 @@ export default function SettingsPage() {
           </Stack>
         </Section>
 
-        {/* Mission & Vision */}
-        <Section icon={<DesignServicesOutlinedIcon />} title="Mission & vision">
-          <Stack spacing={3}>
-            {textField('mission', 'Mission', en.about.mission, true)}
-            {textField('vision', 'Vision', en.about.vision, true)}
-          </Stack>
-        </Section>
-
         {/* Stats */}
-        <Section icon={<QueryStatsOutlinedIcon />} title="Stats" subtitle="The three figures shown in the About section.">
+        <Section id="stats" icon={<QueryStatsOutlinedIcon />} title="Stats" subtitle="The three figures shown in the About section." sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={2}>
             {form.stats.map((stat, i) => (
               <Stack key={i} direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { sm: 'center' } }}>
@@ -496,8 +617,16 @@ export default function SettingsPage() {
           </Stack>
         </Section>
 
+        {/* Mission & Vision */}
+        <Section id="mission" icon={<DesignServicesOutlinedIcon />} title="Mission & vision" sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
+          <Stack spacing={3}>
+            {textField('mission', 'Mission', en.about.mission, true)}
+            {textField('vision', 'Vision', en.about.vision, true)}
+          </Stack>
+        </Section>
+
         {/* Services */}
-        <Section icon={<DesignServicesOutlinedIcon />} title="Services (what we do)">
+        <Section id="services" icon={<DesignServicesOutlinedIcon />} title="Services (what we do)" sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={2.5}>
             {form.services.map((svc, i) => (
               <Box key={i} sx={{ border: `1px solid ${palette.inkBorder}`, borderRadius: 1, p: 2 }}>
@@ -515,7 +644,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Pricing */}
-        <Section icon={<LocalOfferOutlinedIcon />} title="Pricing & packages">
+        <Section id="pricing" icon={<LocalOfferOutlinedIcon />} title="Pricing & packages" sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={3}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               {textField('pricingCurrency', 'Currency symbol', en.pricing.currency)}
@@ -530,9 +659,9 @@ export default function SettingsPage() {
               </Typography>
               <Stack spacing={1.5}>
                 {form.outdoor.map((tier, i) => (
-                  <Stack key={i} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                  <Stack key={i} direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ alignItems: { xs: 'stretch', md: 'center' } }}>
                     <TextField label="Label" value={tier.label} disabled={!editable} fullWidth onChange={(e) => set('outdoor', form.outdoor.map((o, j) => (j === i ? { ...o, label: e.target.value } : o)))} />
-                    <TextField label="Price" value={tier.price} disabled={!editable} onChange={(e) => set('outdoor', form.outdoor.map((o, j) => (j === i ? { ...o, price: e.target.value } : o)))} sx={{ maxWidth: 140 }} />
+                    <TextField label="Price" value={tier.price} disabled={!editable} onChange={(e) => set('outdoor', form.outdoor.map((o, j) => (j === i ? { ...o, price: e.target.value } : o)))} sx={{ width: { xs: '100%', md: 140 } }} />
                     <RowTools disabled={!editable} onUp={() => set('outdoor', moveItem(form.outdoor, i, -1))} onDown={() => set('outdoor', moveItem(form.outdoor, i, 1))} onRemove={() => set('outdoor', form.outdoor.filter((_, j) => j !== i))} />
                   </Stack>
                 ))}
@@ -552,11 +681,11 @@ export default function SettingsPage() {
               <Stack spacing={2.5}>
                 {form.wedding.map((pkg, i) => (
                   <Box key={i} sx={{ border: `1px solid ${palette.inkBorder}`, borderRadius: 1, p: 2 }}>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 1.5 }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { xs: 'stretch', sm: 'center' }, mb: 1.5 }}>
                       <TextField label="Package name" value={pkg.name} disabled={!editable} fullWidth onChange={(e) => set('wedding', form.wedding.map((w, j) => (j === i ? { ...w, name: e.target.value } : w)))} />
                       <RowTools disabled={!editable} onUp={() => set('wedding', moveItem(form.wedding, i, -1))} onDown={() => set('wedding', moveItem(form.wedding, i, 1))} onRemove={() => set('wedding', form.wedding.filter((_, j) => j !== i))} />
                     </Stack>
-                    <Stack direction="row" spacing={1.5} sx={{ mb: 1.5 }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mb: 1.5 }}>
                       <TextField label="1 day price" value={pkg.oneDay} disabled={!editable} fullWidth onChange={(e) => set('wedding', form.wedding.map((w, j) => (j === i ? { ...w, oneDay: e.target.value } : w)))} />
                       <TextField label="2 days price" value={pkg.twoDays} disabled={!editable} fullWidth onChange={(e) => set('wedding', form.wedding.map((w, j) => (j === i ? { ...w, twoDays: e.target.value } : w)))} />
                     </Stack>
@@ -585,7 +714,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Contact */}
-        <Section icon={<ContactMailOutlinedIcon />} title="Contact">
+        <Section id="contact" icon={<ContactMailOutlinedIcon />} title="Contact">
           <Stack spacing={2.5}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               {textField('email', 'Email', BRAND.email)}
@@ -599,7 +728,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Location */}
-        <Section icon={<PlaceOutlinedIcon />} title="Location & studio">
+        <Section id="location" icon={<PlaceOutlinedIcon />} title="Location & studio">
           <Stack spacing={2.5}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               {textField('location', 'Studio location', BRAND.location)}
@@ -613,17 +742,17 @@ export default function SettingsPage() {
         </Section>
 
         {/* Socials */}
-        <Section icon={<ShareOutlinedIcon />} title="Social links">
+        <Section id="socials" icon={<ShareOutlinedIcon />} title="Social links" sx={{ gridColumn: { xs: '1', lg: '1 / -1' } }}>
           <Stack spacing={1.5}>
             {form.socials.map((social, i) => (
-              <Stack key={i} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+              <Stack key={i} direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ alignItems: { xs: 'stretch', md: 'center' } }}>
                 <TextField
                   select
                   label="Platform"
                   value={social.name}
                   disabled={!editable}
                   onChange={(e) => set('socials', form.socials.map((s, j) => (j === i ? { ...s, name: e.target.value } : s)))}
-                  sx={{ minWidth: 150 }}
+                  sx={{ minWidth: { md: 150 } }}
                 >
                   {SOCIAL_PLATFORMS.map((name) => (
                     <MenuItem key={name} value={name}>
@@ -642,7 +771,8 @@ export default function SettingsPage() {
             </Button>
           </Stack>
         </Section>
-      </Stack>
+        </Box>
+      </Box>
 
       {editable && (
         <Box
@@ -659,7 +789,7 @@ export default function SettingsPage() {
             zIndex: 2,
           }}
         >
-          <Button variant="contained" size="large" disabled={saving} onClick={save} startIcon={saving ? <CircularProgress size={16} /> : undefined}>
+          <Button variant="contained" size="large" disabled={saving} onClick={save}>
             {saving ? 'Saving…' : 'Save changes'}
           </Button>
         </Box>

@@ -343,6 +343,18 @@ export default function Navbar() {
                 {t('nav.book')}
               </Button>
 
+              <ThemeToggle
+                sx={{
+                  display: { xs: 'inline-flex', md: 'none' },
+                  color: navText,
+                  width: 46,
+                  height: 46,
+                  border: `1px solid ${glassBorder}`,
+                  background: toolBg,
+                  '&:hover': { background: overDark ? 'rgba(244,237,231,0.14)' : 'rgba(95,5,58,0.1)' },
+                }}
+              />
+
               <IconButton
                 aria-label={t('a11y.openMenu')}
                 onClick={() => setOpen(true)}
@@ -482,11 +494,33 @@ export default function Navbar() {
               {brand.phoneIntl}
             </Link>
           </Stack>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2, mt: 3 }}>
             <SocialLinks color={palette.ivoryMuted} />
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: 'center',
+                border: `1px solid ${palette.inkBorder}`,
+                bgcolor: palette.decor,
+                px: 1,
+                py: 0.65,
+              }}
+            >
               <LanguageSwitcher color={palette.ivoryMuted} />
-              <ThemeToggle sx={{ color: palette.ivoryMuted }} />
+              <Box sx={{ width: '1px', height: 18, bgcolor: palette.inkBorder }} />
+              <Box
+                component="span"
+                sx={{
+                  color: palette.ivoryMuted,
+                  fontSize: '0.66rem',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Theme
+              </Box>
+              <ThemeToggle sx={{ color: palette.ivoryMuted, p: 0.25 }} />
             </Stack>
           </Box>
         </Box>

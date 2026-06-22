@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import type { SxProps, Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
 import { palette } from '../../theme';
@@ -10,12 +11,14 @@ interface SectionProps {
   /** One-line explanation rendered under the title. */
   subtitle?: string;
   children: ReactNode;
+  id?: string;
+  sx?: SxProps<Theme>;
 }
 
 /** Bordered card used across the account pages (Profile / Preferences / Security). */
-export function Section({ icon, title, subtitle, children }: SectionProps) {
+export function Section({ icon, title, subtitle, children, id, sx }: SectionProps) {
   return (
-    <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 } }}>
+    <Box id={id} sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 }, scrollMarginTop: 96, ...sx }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', mb: 3 }}>
         <Box sx={{ color: palette.rose, display: 'flex', mt: 0.25 }}>{icon}</Box>
         <Box>

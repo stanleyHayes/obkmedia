@@ -116,6 +116,16 @@ const GROUPS: NavGroup[] = [
       { label: 'Roles', to: '/admin/roles', icon: <ShieldOutlinedIcon />, permission: 'roles.view' },
     ],
   },
+  {
+    key: 'account',
+    label: 'Account',
+    icon: <AccountCircleOutlinedIcon />,
+    children: [
+      { label: 'Profile', to: '/admin/profile', icon: <ManageAccountsOutlinedIcon /> },
+      { label: 'Update password', to: '/admin/security', icon: <KeyOutlinedIcon /> },
+      { label: 'Settings', to: '/admin/preferences', icon: <TuneOutlinedIcon /> },
+    ],
+  },
 ];
 
 function readStorage<T>(key: string, fallback: T): T {
@@ -220,31 +230,6 @@ export default function AdminLayout() {
       description: 'A quick guide to the dashboard, content tools, inbox, and account controls.',
       icon: <TravelExploreOutlinedIcon />,
       onSelect: startTour,
-    },
-    {
-      title: 'Profile',
-      description: 'Update your name, email, role visibility, and permission overview.',
-      icon: <ManageAccountsOutlinedIcon />,
-      to: '/admin/profile',
-    },
-    {
-      title: 'Update password',
-      description: 'Change the password for this admin account.',
-      icon: <KeyOutlinedIcon />,
-      to: '/admin/security',
-    },
-    {
-      title: 'Preferences',
-      description: 'Set notifications, preferred landing page, and theme behavior.',
-      icon: <TuneOutlinedIcon />,
-      to: '/admin/preferences',
-    },
-    {
-      title: 'Settings',
-      description: 'Update public website content, hero media, pricing, and studio details.',
-      icon: <WebOutlinedIcon />,
-      to: '/admin/settings',
-      permission: 'settings.view',
     },
     {
       title: 'Help',

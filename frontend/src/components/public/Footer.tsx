@@ -410,7 +410,9 @@ export default function Footer() {
         <Box
           sx={{
             borderTop: `1px solid ${palette.inkBorder}`,
-            py: 3,
+            pt: 3,
+            pb: { xs: 11, sm: 9, md: 3 },
+            pr: { xs: 8, sm: 10, md: 0 },
             display: 'flex',
             flexWrap: 'wrap',
             gap: 1.5,
