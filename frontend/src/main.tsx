@@ -12,14 +12,17 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './i18n';
 import './index.css';
+import { SiteSettingsProvider } from './SiteSettingsContext';
 import { ThemeModeProvider } from './ThemeModeContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeModeProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <SiteSettingsProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SiteSettingsProvider>
     </ThemeModeProvider>
   </StrictMode>,
 );

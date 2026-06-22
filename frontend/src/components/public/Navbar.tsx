@@ -1,6 +1,8 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import AppBar from '@mui/material/AppBar';
@@ -16,14 +18,15 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { BRAND } from '../../content';
+import { useBrand } from '../../SiteSettingsContext';
 import { onDark, palette } from '../../theme';
+import BrandLogo from '../BrandLogo';
 import LanguageSwitcher from '../LanguageSwitcher';
 import SocialLinks from './SocialLinks';
 import ThemeToggle from '../ThemeToggle';
 
 interface NavItem {
-  key: 'home' | 'portfolio' | 'about' | 'services' | 'contact';
+  key: 'home' | 'portfolio' | 'about' | 'services' | 'pricing' | 'contact';
   to: string;
   hash: string;
 }
@@ -33,10 +36,12 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'portfolio', to: '/portfolio', hash: '' },
   { key: 'about', to: '/', hash: 'about' },
   { key: 'services', to: '/', hash: 'services' },
+  { key: 'pricing', to: '/', hash: 'pricing' },
   { key: 'contact', to: '/', hash: 'contact' },
 ];
 
-const SECTION_IDS = ['about', 'services', 'contact'];
+const SECTION_IDS = ['about', 'services', 'pricing', 'contact'];
+const BOOK_ITEM = NAV_ITEMS.find((item) => item.key === 'contact') ?? NAV_ITEMS[NAV_ITEMS.length - 1];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -46,6 +51,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const brand = useBrand();
+  const telHref = `tel:${brand.phoneIntl.replace(/\s+/g, '')}`;
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -61,10 +68,7 @@ export default function Navbar() {
 
   // Scroll-spy: highlight the nav item for the section currently in view.
   useEffect(() => {
-    if (!isHome) {
-      setActiveSection('');
-      return;
-    }
+    if (!isHome) return;
     const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
       (el): el is HTMLElement => el !== null,
     );
@@ -104,15 +108,17 @@ export default function Navbar() {
     }
   };
 
-  // Only the home page and portfolio detail pages open with an always-dark
-  // hero image; everywhere else the unscrolled bar sits on the page background.
+  // Public hero surfaces open dark; legal/error-style pages sit on the page background.
   // Over a dark hero the text must stay light in both themes; otherwise it
   // follows the active theme (the scrolled scrim also flips with the theme).
-  const hasDarkHero = isHome || /^\/portfolio\/.+/.test(location.pathname);
+  const hasDarkHero = isHome || location.pathname === '/portfolio' || /^\/portfolio\/.+/.test(location.pathname);
   const overDark = !scrolled && hasDarkHero;
   const navText = overDark ? onDark.ivory : palette.ivory;
   const navMuted = overDark ? 'rgba(244,237,231,0.72)' : palette.ivoryMuted;
   const navRose = overDark ? onDark.rose : palette.rose;
+  const barBg = scrolled ? palette.scrim : overDark ? 'rgba(11, 7, 9, 0.1)' : palette.scrim;
+  const glassBorder = overDark ? 'rgba(244,237,231,0.14)' : palette.inkBorder;
+  const toolBg = overDark ? 'rgba(244,237,231,0.08)' : 'rgba(95,5,58,0.06)';
 
   return (
     <>
@@ -120,81 +126,150 @@ export default function Navbar() {
         position="fixed"
         elevation={0}
         sx={{
-          bgcolor: scrolled ? palette.scrim : 'transparent',
-          backdropFilter: scrolled ? 'blur(14px)' : 'none',
-          borderBottom: `1px solid ${scrolled ? palette.inkBorder : 'transparent'}`,
+          bgcolor: barBg,
+          backdropFilter: scrolled || !overDark ? 'blur(18px)' : 'blur(8px)',
+          borderBottom: `1px solid ${scrolled || !overDark ? palette.inkBorder : 'transparent'}`,
+          boxShadow: scrolled ? '0 18px 60px rgba(11, 7, 9, 0.18)' : 'none',
           transition: 'all 360ms ease',
         }}
       >
-        {/* Top utility strip — collapses away on scroll */}
         <Box
           sx={{
             overflow: 'hidden',
-            maxHeight: scrolled ? 0 : 44,
+            maxHeight: scrolled ? 0 : { xs: 0, md: 42 },
             opacity: scrolled ? 0 : 1,
             transition: 'all 360ms ease',
-            borderBottom: `1px solid ${overDark ? 'rgba(223,169,201,0.12)' : palette.inkBorder}`,
+            borderBottom: `1px solid ${glassBorder}`,
+            display: { xs: 'none', md: 'block' },
           }}
         >
           <Container maxWidth="xl">
             <Stack
               direction="row"
               sx={{
-                height: 44,
+                height: 42,
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}
             >
+              <Stack direction="row" spacing={2.75} sx={{ alignItems: 'center', minWidth: 0 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', color: navRose }}>
+                  <CalendarMonthOutlinedIcon sx={{ fontSize: '0.95rem' }} />
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: navMuted,
+                      letterSpacing: '0.16em',
+                      textTransform: 'uppercase',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {brand.hours}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', color: navRose }}>
+                  <FmdGoodOutlinedIcon sx={{ fontSize: '0.95rem' }} />
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: navMuted,
+                      letterSpacing: '0.16em',
+                      textTransform: 'uppercase',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {brand.location}
+                  </Typography>
+                </Stack>
+              </Stack>
+
               <Stack direction="row" spacing={3} sx={{ alignItems: 'center', color: navMuted }}>
                 <Link
-                  href={`mailto:${BRAND.email}`}
-                  sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: navRose } }}
+                  href={`mailto:${brand.email}`}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.75,
+                    color: 'inherit',
+                    fontSize: '0.72rem',
+                    letterSpacing: '0.08em',
+                    textDecoration: 'none',
+                    '&:hover': { color: navRose },
+                  }}
                 >
-                  <EmailOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.email}
+                  <EmailOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {brand.email}
                 </Link>
                 <Link
-                  href="tel:+233546175921"
-                  sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.75, color: 'inherit', fontSize: '0.72rem', letterSpacing: '0.08em', '&:hover': { color: navRose } }}
+                  href={telHref}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.75,
+                    color: 'inherit',
+                    fontSize: '0.72rem',
+                    letterSpacing: '0.08em',
+                    textDecoration: 'none',
+                    '&:hover': { color: navRose },
+                  }}
                 >
-                  <PhoneOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {BRAND.phoneIntl}
+                  <PhoneOutlinedIcon sx={{ fontSize: '0.95rem' }} /> {brand.phoneIntl}
                 </Link>
-              </Stack>
-              <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
                 <SocialLinks color={navMuted} size={18} />
-                <Box sx={{ width: '1px', height: 16, bgcolor: overDark ? 'rgba(244,237,231,0.2)' : palette.inkBorder }} />
-                <LanguageSwitcher color={navMuted} />
-                <ThemeToggle sx={{ color: navMuted, p: 0.5 }} />
               </Stack>
             </Stack>
           </Container>
         </Box>
 
-        {/* Main bar */}
         <Container maxWidth="xl">
           <Toolbar
             disableGutters
             sx={{
-              minHeight: { xs: 62, md: scrolled ? 70 : 80 },
+              minHeight: { xs: 72, md: scrolled ? 74 : 88 },
               transition: 'min-height 360ms ease',
               justifyContent: 'space-between',
+              gap: 2,
             }}
           >
             <Box
               component={RouterLink}
               to="/"
               onClick={() => window.scrollTo({ top: 0 })}
-              sx={{ textDecoration: 'none', lineHeight: 1 }}
+              sx={{
+                textDecoration: 'none',
+                lineHeight: 1,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 1.7,
+                minWidth: { md: 255 },
+              }}
             >
-              <Typography variant="h5" component="span" sx={{ color: navText, letterSpacing: '0.16em', fontWeight: 600 }}>
-                OBK
-                <Box component="span" sx={{ color: navRose, fontStyle: 'italic' }}>
-                  {' '}
-                  MEDIA
-                </Box>
-              </Typography>
+              <BrandLogo
+                animated={!scrolled}
+                imageUrl={brand.logoUrl}
+                subtitle={brand.tagline}
+                textColor={navText}
+                accentColor={navRose}
+                mutedColor={navMuted}
+                sx={{ width: { xs: 178, sm: 246, md: 258 } }}
+              />
             </Box>
 
-            <Stack direction="row" spacing={4.5} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <Stack
+              component="nav"
+              aria-label="Primary navigation"
+              direction="row"
+              spacing={0.75}
+              sx={{
+                display: { xs: 'none', lg: 'flex' },
+                alignItems: 'center',
+                justifyContent: 'center',
+                px: 1,
+                py: 0.75,
+                border: `1px solid ${glassBorder}`,
+                background: overDark ? 'rgba(11,7,9,0.22)' : 'rgba(255,255,255,0.03)',
+                backdropFilter: 'blur(16px)',
+              }}
+            >
               {NAV_ITEMS.map((item) => {
                 const active = isActive(item);
                 return (
@@ -206,63 +281,93 @@ export default function Navbar() {
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      color: active ? navRose : navText,
+                      color: active ? (overDark ? onDark.ivory : palette.ivory) : navText,
                       fontFamily: '"Outfit", sans-serif',
-                      fontSize: '0.76rem',
-                      letterSpacing: '0.22em',
+                      fontSize: '0.7rem',
+                      letterSpacing: '0.18em',
                       textTransform: 'uppercase',
-                      fontWeight: 400,
-                      p: 0,
+                      fontWeight: active ? 600 : 400,
+                      px: 1.55,
+                      py: 1.1,
                       position: 'relative',
-                      transition: 'color 240ms ease',
+                      transition: 'color 240ms ease, background-color 240ms ease',
                       '&::after': {
                         content: '""',
                         position: 'absolute',
-                        left: 0,
-                        bottom: -7,
-                        width: '100%',
-                        height: '1px',
+                        left: '50%',
+                        bottom: 6,
+                        width: active ? 18 : 0,
+                        height: '2px',
                         bgcolor: navRose,
-                        transform: active ? 'scaleX(1)' : 'scaleX(0)',
-                        transformOrigin: 'left',
-                        transition: 'transform 280ms ease',
+                        transform: 'translateX(-50%)',
+                        transition: 'width 260ms ease',
                       },
-                      '&:hover': { color: navRose },
-                      '&:hover::after': { transform: 'scaleX(1)' },
+                      '&:hover': { color: navRose, backgroundColor: toolBg },
+                      '&:hover::after': { width: 18 },
                     }}
                   >
                     {t(`nav.${item.key}`)}
                   </Typography>
                 );
               })}
+            </Stack>
+
+            <Stack direction="row" spacing={1.1} sx={{ alignItems: 'center', justifyContent: 'flex-end', minWidth: { md: 255 } }}>
+              <Box
+                sx={{
+                  display: { xs: 'none', md: 'inline-flex' },
+                  alignItems: 'center',
+                  gap: 0.75,
+                  border: `1px solid ${glassBorder}`,
+                  background: toolBg,
+                  px: 1.4,
+                  py: 0.8,
+                }}
+              >
+                <LanguageSwitcher color={navMuted} />
+                <Box sx={{ width: '1px', height: 18, bgcolor: glassBorder }} />
+                <ThemeToggle sx={{ color: navMuted, p: 0.4 }} />
+              </Box>
               <Button
                 variant="contained"
                 color="primary"
                 size="small"
                 endIcon={<ArrowOutwardIcon sx={{ fontSize: '1rem !important' }} />}
-                onClick={() => go(NAV_ITEMS[4])}
+                onClick={() => go(BOOK_ITEM)}
+                sx={{
+                  display: { xs: 'none', sm: 'inline-flex' },
+                  minHeight: 46,
+                  px: { sm: 2.5, md: 3.5 },
+                }}
               >
                 {t('nav.book')}
               </Button>
-            </Stack>
 
-            <IconButton
-              aria-label={t('a11y.openMenu')}
-              onClick={() => setOpen(true)}
-              sx={{ display: { xs: 'inline-flex', md: 'none' }, color: navText }}
-            >
-              <MenuIcon />
-            </IconButton>
+              <IconButton
+                aria-label={t('a11y.openMenu')}
+                onClick={() => setOpen(true)}
+                sx={{
+                  display: { xs: 'inline-flex', lg: 'none' },
+                  color: navText,
+                  width: 46,
+                  height: 46,
+                  border: `1px solid ${glassBorder}`,
+                  background: toolBg,
+                  '&:hover': { background: overDark ? 'rgba(244,237,231,0.14)' : 'rgba(95,5,58,0.1)' },
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Stack>
           </Toolbar>
         </Container>
 
-        {/* Wine scroll-progress line */}
         <Box
           aria-hidden
           sx={{
-            height: '2px',
+            height: '3px',
             width: `${progress * 100}%`,
-            bgcolor: palette.wineBright,
+            background: `linear-gradient(90deg, ${palette.wine}, ${palette.wineBright}, ${palette.rose})`,
             opacity: scrolled ? 1 : 0,
             transition: 'opacity 360ms ease',
           }}
@@ -279,24 +384,46 @@ export default function Navbar() {
               width: '100%',
               maxWidth: 380,
               bgcolor: palette.ink,
-              backgroundImage: 'radial-gradient(ellipse at 80% 0%, rgba(95,5,58,0.35), transparent 60%)',
-              p: 3,
+              backgroundImage:
+                'linear-gradient(145deg, rgba(95,5,58,0.28), transparent 42%), radial-gradient(ellipse at 80% 0%, rgba(223,169,201,0.12), transparent 58%)',
+              p: { xs: 3, sm: 4 },
               display: 'flex',
               flexDirection: 'column',
+              borderLeft: `1px solid ${palette.inkBorder}`,
             },
           },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ color: palette.ivory, letterSpacing: '0.14em' }}>
-            OBK <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>MEDIA</Box>
-          </Typography>
-          <IconButton aria-label={t('a11y.closeMenu')} onClick={() => setOpen(false)} sx={{ color: palette.ivory }}>
+          <Box>
+            <Typography variant="h6" sx={{ color: palette.ivory, letterSpacing: '0.16em' }}>
+              OBK <Box component="span" sx={{ color: palette.rose, fontStyle: 'italic' }}>MEDIA</Box>
+            </Typography>
+            <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+              {brand.tagline}
+            </Typography>
+          </Box>
+          <IconButton
+            aria-label={t('a11y.closeMenu')}
+            onClick={() => setOpen(false)}
+            sx={{ color: palette.ivory, border: `1px solid ${palette.inkBorder}` }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
 
-        <Stack spacing={3.5} sx={{ mt: 7, px: 1, flex: 1 }}>
+        <Box sx={{ mt: 4, borderTop: `1px solid ${palette.inkBorder}`, borderBottom: `1px solid ${palette.inkBorder}`, py: 2.5 }}>
+          <Stack spacing={1.4}>
+            <Typography variant="caption" sx={{ color: palette.rose, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+              {brand.location}
+            </Typography>
+            <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              {brand.hours}
+            </Typography>
+          </Stack>
+        </Box>
+
+        <Stack spacing={2.7} sx={{ mt: 5, px: 0.5, flex: 1 }}>
           {NAV_ITEMS.map((item, index) => (
             <Typography
               key={item.key}
@@ -309,35 +436,50 @@ export default function Navbar() {
                 textAlign: 'left',
                 color: isActive(item) ? palette.rose : palette.ivory,
                 fontFamily: '"Cormorant Garamond", serif',
-                fontSize: '2.1rem',
+                fontSize: { xs: '2rem', sm: '2.3rem' },
                 lineHeight: 1,
                 p: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
                 opacity: 0,
                 animation: `obk-fade-up 500ms ease forwards ${120 + index * 70}ms`,
                 '&:hover': { color: palette.rose },
               }}
             >
+              <Box
+                component="span"
+                sx={{
+                  color: isActive(item) ? palette.rose : palette.ivoryMuted,
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: '0.68rem',
+                  letterSpacing: '0.16em',
+                  minWidth: 26,
+                }}
+              >
+                {String(index + 1).padStart(2, '0')}
+              </Box>
               {t(`nav.${item.key}`)}
             </Typography>
           ))}
         </Stack>
 
-        <Box sx={{ px: 1, pb: 1 }}>
+        <Box sx={{ px: 0.5, pb: 1 }}>
           <Button
             fullWidth
             variant="contained"
             endIcon={<ArrowOutwardIcon />}
-            onClick={() => go(NAV_ITEMS[4])}
+            onClick={() => go(BOOK_ITEM)}
             sx={{ mb: 3 }}
           >
             {t('nav.book')}
           </Button>
           <Stack spacing={1}>
-            <Link href={`mailto:${BRAND.email}`} sx={{ color: palette.ivoryMuted, fontSize: '0.85rem', fontWeight: 300 }}>
-              {BRAND.email}
+            <Link href={`mailto:${brand.email}`} sx={{ color: palette.ivoryMuted, fontSize: '0.85rem', fontWeight: 300 }}>
+              {brand.email}
             </Link>
             <Link href="tel:+233546175921" sx={{ color: palette.ivoryMuted, fontSize: '0.85rem', fontWeight: 300 }}>
-              {BRAND.phoneIntl}
+              {brand.phoneIntl}
             </Link>
           </Stack>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3 }}>

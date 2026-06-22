@@ -1,11 +1,16 @@
 import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import LanguageIcon from '@mui/icons-material/Language';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import XIcon from '@mui/icons-material/X';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import SvgIcon, { type SvgIconProps } from '@mui/material/SvgIcon';
 import Tooltip from '@mui/material/Tooltip';
 import type { ComponentType } from 'react';
-import { SOCIALS } from '../../content';
+import { useSocials } from '../../SiteSettingsContext';
 
 function TikTokIcon(props: SvgIconProps) {
   return (
@@ -19,7 +24,15 @@ const ICONS: Record<string, ComponentType<SvgIconProps>> = {
   TikTok: TikTokIcon,
   YouTube: YouTubeIcon,
   Facebook: FacebookIcon,
+  Instagram: InstagramIcon,
+  WhatsApp: WhatsAppIcon,
+  LinkedIn: LinkedInIcon,
+  X: XIcon,
+  Twitter: XIcon,
 };
+
+/** Names the admin can choose from (drives the icon shown). */
+export const SOCIAL_PLATFORMS = ['TikTok', 'YouTube', 'Facebook', 'Instagram', 'WhatsApp', 'LinkedIn', 'X'] as const;
 
 interface SocialLinksProps {
   color?: string;
@@ -29,24 +42,27 @@ interface SocialLinksProps {
 
 /** Renders the configured socials as icon links. */
 export default function SocialLinks({ color = 'inherit', size = 19, gap = 1.5 }: SocialLinksProps) {
+  const socials = useSocials();
   return (
     <Stack direction="row" spacing={gap} sx={{ alignItems: 'center' }}>
-      {SOCIALS.map((social) => {
-        const Icon = ICONS[social.name] ?? YouTubeIcon;
-        return (
-          <Tooltip key={social.name} title={social.name}>
-            <Link
-              href={social.url}
-              target="_blank"
-              rel="noopener"
-              aria-label={social.name}
-              sx={{ color, display: 'inline-flex', transition: 'color 200ms ease', '&:hover': { color: 'var(--obk-rose)' } }}
-            >
-              <Icon sx={{ fontSize: size }} />
-            </Link>
-          </Tooltip>
-        );
-      })}
+      {socials
+        .filter((social) => social.url?.trim())
+        .map((social) => {
+          const Icon = ICONS[social.name] ?? LanguageIcon;
+          return (
+            <Tooltip key={`${social.name}-${social.url}`} title={social.name}>
+              <Link
+                href={social.url}
+                target="_blank"
+                rel="noopener"
+                aria-label={social.name}
+                sx={{ color, display: 'inline-flex', transition: 'color 200ms ease', '&:hover': { color: 'var(--obk-rose)' } }}
+              >
+                <Icon sx={{ fontSize: size }} />
+              </Link>
+            </Tooltip>
+          );
+        })}
     </Stack>
   );
 }

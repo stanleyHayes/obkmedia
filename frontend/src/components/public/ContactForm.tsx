@@ -1,6 +1,7 @@
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,7 +11,7 @@ import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../api/client';
 import { publicApi } from '../../api/public';
-import { BRAND } from '../../content';
+import { useBrand } from '../../SiteSettingsContext';
 import { palette } from '../../theme';
 
 const EMPTY_FORM = {
@@ -30,6 +31,7 @@ type FormState = typeof EMPTY_FORM;
 
 export default function ContactForm() {
   const { t } = useTranslation();
+  const brand = useBrand();
   const shootTypes = t('shootTypes', { returnObjects: true }) as string[];
   const budgetRanges = t('budgetRanges', { returnObjects: true }) as string[];
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -41,6 +43,11 @@ export default function ContactForm() {
   const set = (key: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
     setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  const setShootType = (value: string | null) => {
+    setForm((prev) => ({ ...prev, shootType: value ?? '' }));
+    setErrors((prev) => ({ ...prev, shootType: undefined }));
   };
 
   const validate = (): boolean => {
@@ -124,7 +131,7 @@ export default function ContactForm() {
         <Box sx={{ bgcolor: palette.inkRaised, p: 2.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           <Button
             component="a"
-            href={BRAND.whatsappUrl}
+            href={brand.whatsappUrl}
             target="_blank"
             rel="noopener"
             variant="contained"
@@ -168,13 +175,53 @@ export default function ContactForm() {
         />
         <TextField label={t('contact.form.phone')} value={form.phone} onChange={set('phone')} />
         <TextField label={t('contact.form.company')} value={form.company} onChange={set('company')} />
-        <TextField select label={t('contact.form.shootType')} value={form.shootType} onChange={set('shootType')}>
-          {shootTypes.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Autocomplete
+          freeSolo
+          autoHighlight
+          selectOnFocus
+          clearOnBlur={false}
+          handleHomeEndKeys
+          options={shootTypes}
+          value={form.shootType}
+          inputValue={form.shootType}
+          onChange={(_, value) => setShootType(value)}
+          onInputChange={(_, value) => setShootType(value)}
+          slotProps={{
+            paper: {
+              sx: {
+                mt: 1,
+                bgcolor: palette.inkRaised,
+                border: `1px solid ${palette.inkBorder}`,
+                boxShadow: '0 18px 48px rgba(11, 7, 9, 0.2)',
+              },
+            },
+            listbox: {
+              sx: {
+                maxHeight: 280,
+                py: 0.75,
+                '& .MuiAutocomplete-option': {
+                  minHeight: 44,
+                  px: 2,
+                  py: 1.25,
+                  color: palette.ivory,
+                  borderBottom: `1px solid ${palette.inkBorder}`,
+                  '&:last-of-type': { borderBottom: 0 },
+                  '&.Mui-focused': { bgcolor: 'rgba(142, 27, 99, 0.1)' },
+                  '&[aria-selected="true"]': { bgcolor: 'rgba(142, 27, 99, 0.14)' },
+                },
+              },
+            },
+            clearIndicator: { sx: { color: palette.ivoryMuted } },
+            popupIndicator: { sx: { color: palette.ivoryMuted } },
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={t('contact.form.shootType')}
+              placeholder={t('contact.form.shootTypePlaceholder')}
+            />
+          )}
+        />
         <TextField
           label={t('contact.form.preferredDate')}
           type="date"

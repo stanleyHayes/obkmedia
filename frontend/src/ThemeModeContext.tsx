@@ -1,13 +1,22 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import { cssVarsFor, makeTheme, type ThemeMode } from './theme';
 
 interface ThemeModeState {
   mode: ThemeMode;
   toggle: () => void;
+  /** Toggle with a circular reveal animation originating at the given viewport
+   *  coordinates (typically the toggle button). Falls back to an instant swap
+   *  when the View Transitions API is unavailable or reduced motion is set. */
+  toggleWithReveal: (x?: number, y?: number) => void;
   setMode: (mode: ThemeMode) => void;
 }
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => { ready: Promise<void> };
+};
 
 const ThemeModeContext = createContext<ThemeModeState | null>(null);
 
@@ -51,8 +60,43 @@ export function ThemeModeProvider({ children }: { children: ReactNode }) {
   const setMode = useCallback((next: ThemeMode) => setModeState(next), []);
   const toggle = useCallback(() => setModeState((m) => (m === 'dark' ? 'light' : 'dark')), []);
 
+  const toggleWithReveal = useCallback(
+    (x?: number, y?: number) => {
+      const next: ThemeMode = mode === 'dark' ? 'light' : 'dark';
+      const doc = document as ViewTransitionDocument;
+      const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      if (!doc.startViewTransition || reduceMotion || x === undefined || y === undefined) {
+        setModeState(next);
+        return;
+      }
+      const transition = doc.startViewTransition(() => {
+        // Commit synchronously and apply the CSS variables now so the View
+        // Transition snapshots the new theme (the effect below repeats this).
+        flushSync(() => setModeState(next));
+        applyMode(next);
+      });
+      transition.ready
+        .then(() => {
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const endRadius = Math.hypot(Math.max(x, w - x), Math.max(y, h - y));
+          document.documentElement.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+            { duration: 520, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
+          );
+        })
+        .catch(() => {
+          /* a skipped/failed transition still leaves the new theme applied */
+        });
+    },
+    [mode],
+  );
+
   const muiTheme = useMemo(() => makeTheme(mode), [mode]);
-  const value = useMemo(() => ({ mode, toggle, setMode }), [mode, toggle, setMode]);
+  const value = useMemo(
+    () => ({ mode, toggle, toggleWithReveal, setMode }),
+    [mode, toggle, toggleWithReveal, setMode],
+  );
 
   return (
     <ThemeModeContext.Provider value={value}>

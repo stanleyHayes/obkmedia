@@ -5,32 +5,57 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { BRAND } from '../../content';
+import { useBrand, useSiteSettings } from '../../SiteSettingsContext';
 import { onDark } from '../../theme';
+import ParallaxFrame from '../ParallaxFrame';
 
-// Placeholder until the client's hero image is supplied (client confirmed one exists).
-const HERO_IMAGE = 'https://picsum.photos/seed/obk-hero/1920/1200';
+const HERO_IMAGE =
+  'https://res.cloudinary.com/dvoqbonr2/image/upload/c_limit,f_auto,q_auto,w_2200/v1/obkmedia/portfolio/IMG_5650?_a=BAMAPqRj0';
+
+const heroRevealSx = (delay: number) => ({
+  opacity: 0,
+  transformOrigin: '50% 80%',
+  transformStyle: 'preserve-3d',
+  animation: `obk-3d-rise 980ms cubic-bezier(0.16, 1, 0.3, 1) forwards ${delay}ms`,
+});
 
 export default function HeroSection() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { settings } = useSiteSettings();
+  const brand = useBrand();
+  const heroImage = settings?.heroImageUrl?.trim() || HERO_IMAGE;
   return (
-    <Box component="section" sx={{ position: 'relative', minHeight: '100svh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-      <Box
-        component="img"
-        src={HERO_IMAGE}
-        alt=""
-        aria-hidden
+    <Box
+      component="section"
+      sx={{ position: 'relative', minHeight: '100svh', display: 'flex', alignItems: 'center', overflow: 'hidden', perspective: '1200px' }}
+    >
+      <ParallaxFrame
+        speed={0.16}
+        maxOffset={120}
+        scale={1.08}
         sx={{
           position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          animation: 'obk-ken-burns 18s ease-out forwards',
-          filter: 'saturate(0.85) brightness(0.85)',
+          inset: '-8svh 0',
+          height: '116%',
+          overflow: 'hidden',
         }}
-      />
+      >
+        <Box
+          component="img"
+          src={heroImage}
+          alt=""
+          aria-hidden
+          sx={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: { xs: '52% 28%', md: '50% 30%' },
+            animation: 'obk-ken-burns 18s ease-out forwards',
+            filter: 'saturate(0.92) brightness(0.78)',
+          }}
+        />
+      </ParallaxFrame>
       <Box
         sx={{
           position: 'absolute',
@@ -44,11 +69,11 @@ export default function HeroSection() {
           <Stack
             direction="row"
             spacing={2}
-            sx={{ alignItems: 'center', mb: 3, opacity: 0, animation: 'obk-fade-up 800ms ease forwards 200ms' }}
+            sx={{ alignItems: 'center', mb: 3, ...heroRevealSx(200) }}
           >
             <Box sx={{ width: 56, height: '1px', bgcolor: onDark.rose }} />
             <Typography variant="overline" sx={{ color: onDark.rose }}>
-              {BRAND.tagline}
+              {brand.tagline}
             </Typography>
           </Stack>
 
@@ -57,14 +82,19 @@ export default function HeroSection() {
             sx={{
               fontSize: { xs: '2.9rem', sm: '4rem', md: '5.4rem' },
               color: onDark.ivory,
-              opacity: 0,
-              animation: 'obk-fade-up 900ms ease forwards 420ms',
+              ...heroRevealSx(420),
             }}
           >
-            {t('hero.headlinePre')}{' '}
-            <Box component="em" sx={{ color: onDark.rose, fontStyle: 'italic' }}>
-              {t('hero.headlineEm')}
-            </Box>
+            {settings?.heroHeadline?.trim() ? (
+              settings.heroHeadline
+            ) : (
+              <>
+                {t('hero.headlinePre')}{' '}
+                <Box component="em" sx={{ color: onDark.rose, fontStyle: 'italic' }}>
+                  {t('hero.headlineEm')}
+                </Box>
+              </>
+            )}
           </Typography>
 
           <Typography
@@ -74,17 +104,16 @@ export default function HeroSection() {
               maxWidth: 560,
               color: onDark.ivoryMuted,
               fontSize: '1.05rem',
-              opacity: 0,
-              animation: 'obk-fade-up 900ms ease forwards 640ms',
+              ...heroRevealSx(640),
             }}
           >
-            {t('hero.subheadline')}
+            {settings?.heroSubheadline?.trim() || t('hero.subheadline')}
           </Typography>
 
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2.5}
-            sx={{ mt: 5.5, opacity: 0, animation: 'obk-fade-up 900ms ease forwards 860ms' }}
+            sx={{ mt: 5.5, ...heroRevealSx(860) }}
           >
             <Button
               variant="contained"

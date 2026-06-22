@@ -14,6 +14,7 @@ import PreferencesPage from './pages/admin/PreferencesPage';
 import ProfilePage from './pages/admin/ProfilePage';
 import ResetPasswordPage from './pages/admin/ResetPasswordPage';
 import SecurityPage from './pages/admin/SecurityPage';
+import SettingsPage from './pages/admin/SettingsPage';
 import RolesPage from './pages/admin/RolesPage';
 import UsersPage from './pages/admin/UsersPage';
 
@@ -80,6 +81,14 @@ export default function AdminApp() {
             element={
               <RequirePermission permission="roles.view">
                 <RolesPage />
+              </RequirePermission>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <RequirePermission permission="settings.view">
+                <SettingsPage />
               </RequirePermission>
             }
           />

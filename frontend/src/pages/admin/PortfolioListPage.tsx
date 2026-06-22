@@ -124,6 +124,7 @@ export default function PortfolioListPage() {
                 component="img"
                 src={item.coverImageUrl}
                 alt=""
+                loading="lazy"
                 sx={{ width: 84, height: 56, objectFit: 'cover', flexShrink: 0, bgcolor: palette.ink }}
               />
               <Box sx={{ flex: 1, minWidth: 200 }}>

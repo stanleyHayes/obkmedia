@@ -1,5 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#0b0709"/>
-  <circle cx="32" cy="32" r="17" fill="none" stroke="#5f053a" stroke-width="5"/>
-  <circle cx="32" cy="32" r="7" fill="#dfa9c9"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" fill="none">
+  <style>
+    @media (prefers-reduced-motion: no-preference) {
+      .iris { animation: obk-favicon-iris 5.8s ease-in-out infinite; transform-origin: 36px 36px; }
+      .glint { stroke-dasharray: 28; animation: obk-favicon-glint 3.2s ease-in-out infinite; }
+      @keyframes obk-favicon-iris {
+        0%, 100% { transform: rotate(0deg) scale(1); opacity: .82; }
+        45% { transform: rotate(8deg) scale(1.03); opacity: 1; }
+      }
+      @keyframes obk-favicon-glint {
+        0%, 58%, 100% { stroke-dashoffset: 28; opacity: .15; }
+        72% { stroke-dashoffset: 0; opacity: .95; }
+      }
+    }
+  </style>
+  <rect width="72" height="72" rx="14" fill="#0b0709"/>
+  <circle cx="36" cy="36" r="29" stroke="#dfa9c9" stroke-opacity=".36" stroke-width="1.5"/>
+  <circle cx="36" cy="36" r="23" stroke="#8e1b63" stroke-width="2"/>
+  <g class="iris" opacity=".9">
+    <path d="M36 12.5 49.5 20.4 42.5 36.5 31 31.8Z" fill="#dfa9c9" opacity=".34"/>
+    <path d="M36 12.5 49.5 20.4 42.5 36.5 31 31.8Z" fill="#dfa9c9" opacity=".34" transform="rotate(60 36 36)"/>
+    <path d="M36 12.5 49.5 20.4 42.5 36.5 31 31.8Z" fill="#dfa9c9" opacity=".34" transform="rotate(120 36 36)"/>
+    <path d="M36 12.5 49.5 20.4 42.5 36.5 31 31.8Z" fill="#dfa9c9" opacity=".34" transform="rotate(180 36 36)"/>
+    <path d="M36 12.5 49.5 20.4 42.5 36.5 31 31.8Z" fill="#dfa9c9" opacity=".34" transform="rotate(240 36 36)"/>
+    <path d="M36 12.5 49.5 20.4 42.5 36.5 31 31.8Z" fill="#dfa9c9" opacity=".34" transform="rotate(300 36 36)"/>
+  </g>
+  <circle cx="36" cy="36" r="15.2" fill="#0b0709" opacity=".9"/>
+  <circle cx="36" cy="36" r="12.8" stroke="#dfa9c9" stroke-opacity=".62"/>
+  <text x="36" y="40.7" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13.4" font-weight="700" fill="#f4ede7">OBK</text>
+  <path class="glint" d="M19 24.5C24.5 18.8 30.2 16 38 16" stroke="#f4ede7" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M51.5 49.5 59 57" stroke="#dfa9c9" stroke-width="2" stroke-linecap="round" opacity=".72"/>
 </svg>

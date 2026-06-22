@@ -6,6 +6,7 @@ import { Category } from '../models/Category.js';
 import { ContactMessage } from '../models/ContactMessage.js';
 import { Portfolio } from '../models/Portfolio.js';
 import { PortfolioImage } from '../models/PortfolioImage.js';
+import { SITE_SETTINGS_KEY, SiteSettings } from '../models/SiteSettings.js';
 import { sendContactNotification } from '../services/email.js';
 
 export const publicRouter = Router();
@@ -74,6 +75,11 @@ publicRouter.get('/portfolio/:slug', async (req, res) => {
 publicRouter.get('/categories', async (_req, res) => {
   const items = await Category.find().sort({ sortOrder: 1, name: 1 }).lean();
   res.json({ items });
+});
+
+publicRouter.get('/settings', async (_req, res) => {
+  const settings = await SiteSettings.findOne({ key: SITE_SETTINGS_KEY }).lean();
+  res.json({ settings: settings ?? null });
 });
 
 const contactLimiter = rateLimit({

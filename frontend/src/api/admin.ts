@@ -11,6 +11,7 @@ import type {
   PortfolioImage,
   PortfolioPayload,
   Role,
+  SiteSettings,
 } from './types';
 
 export const adminApi = {
@@ -98,6 +99,11 @@ export const adminApi = {
     form.append('image', file);
     return api.postForm<{ url: string; publicId: string }>('/api/admin/uploads/image', form);
   },
+
+  // site settings (editable public content)
+  getSettings: () => api.get<{ settings: SiteSettings }>('/api/admin/settings'),
+  updateSettings: (payload: Partial<SiteSettings>) =>
+    api.patch<{ settings: SiteSettings }>('/api/admin/settings', payload),
 
   // categories
   listCategories: () => api.get<{ items: Category[] }>('/api/admin/categories'),

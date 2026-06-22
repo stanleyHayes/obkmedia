@@ -62,7 +62,9 @@ export type Permission =
   | 'users.view'
   | 'users.manage'
   | 'roles.view'
-  | 'roles.manage';
+  | 'roles.manage'
+  | 'settings.view'
+  | 'settings.manage';
 
 export interface Role {
   _id: string;
@@ -135,4 +137,75 @@ export interface AdminStats {
   categories: number;
   messages: number;
   unread: number;
+}
+
+// ---- Editable site content (admin-managed) ----
+export interface SettingsStat {
+  value: string;
+  label: string;
+}
+export interface SettingsService {
+  title: string;
+  description: string;
+}
+export interface SettingsSocial {
+  name: string;
+  url: string;
+}
+export interface SettingsOutdoorTier {
+  label: string;
+  price: string;
+}
+export interface SettingsWeddingPackage {
+  name: string;
+  features: string[];
+  oneDay: string;
+  twoDays: string;
+  popular?: boolean;
+}
+export interface SettingsPricing {
+  intro?: string;
+  currency?: string;
+  outdoorTitle?: string;
+  outdoorNote?: string;
+  outdoor?: SettingsOutdoorTier[];
+  weddingTitle?: string;
+  wedding?: SettingsWeddingPackage[];
+}
+
+export interface SiteSettings {
+  brandName?: string;
+  tagline?: string;
+  logoLightUrl?: string;
+  logoLightPublicId?: string;
+  logoDarkUrl?: string;
+  logoDarkPublicId?: string;
+
+  heroHeadline?: string;
+  heroSubheadline?: string;
+  heroImageUrl?: string;
+  heroImagePublicId?: string;
+
+  aboutImageUrl?: string;
+  aboutImagePublicId?: string;
+  aboutParagraphs?: string[];
+  aboutDifference?: string;
+  mission?: string;
+  vision?: string;
+  stats?: SettingsStat[];
+
+  services?: SettingsService[];
+  pricing?: SettingsPricing;
+
+  email?: string;
+  phone?: string;
+  phoneIntl?: string;
+  whatsappUrl?: string;
+
+  location?: string;
+  mapsUrl?: string;
+  hours?: string;
+  areasServed?: string;
+
+  socials?: SettingsSocial[];
 }

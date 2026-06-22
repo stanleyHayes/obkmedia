@@ -6,10 +6,12 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
+import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
@@ -36,6 +38,22 @@ const EMPTY: PortfolioPayload = {
   clientName: '',
   isFeatured: false,
   isPublished: false,
+};
+
+const panelSx = {
+  border: `1px solid ${palette.inkBorder}`,
+  bgcolor: palette.inkRaised,
+};
+
+const actionIconSx = {
+  width: 34,
+  height: 34,
+  border: `1px solid ${palette.inkBorder}`,
+  color: palette.ivory,
+  '&.Mui-disabled': {
+    color: palette.ivoryMuted,
+    opacity: 0.35,
+  },
 };
 
 export default function PortfolioEditPage() {
@@ -165,11 +183,12 @@ export default function PortfolioEditPage() {
     }
   };
 
-  const updateImageMeta = async (imageId: string, altText: string) => {
+  const updateImageMeta = async (imageId: string, payload: Partial<Pick<PortfolioImage, 'altText' | 'caption'>>) => {
     try {
-      await adminApi.updateImage(imageId, { altText });
+      await adminApi.updateImage(imageId, payload);
+      setImages((prev) => prev.map((image) => (image._id === imageId ? { ...image, ...payload } : image)));
     } catch {
-      setToast('Couldn’t save alt text');
+      setToast('Couldn’t save image details');
     }
   };
 
@@ -205,14 +224,30 @@ export default function PortfolioEditPage() {
 
   return (
     <Box component="form" onSubmit={onSubmit}>
-      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/admin/portfolio')} sx={{ color: palette.ivoryMuted, mb: 2, px: 0 }}>
-        All portfolio items
-      </Button>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 4 }}>
-        <Typography variant="h3">{isNew ? 'New portfolio item' : 'Edit portfolio item'}</Typography>
-        <Button type="submit" variant="contained" disabled={saving} sx={{ minWidth: 140 }}>
-          {saving ? 'Saving…' : 'Save'}
+      <Box sx={{ ...panelSx, p: { xs: 2.5, md: 4 }, mb: 3 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate('/admin/portfolio')}
+          sx={{ color: palette.ivoryMuted, mb: 2, px: 0 }}
+        >
+          All portfolio items
         </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'flex-end' }, flexWrap: 'wrap', gap: 2.5 }}>
+          <Box>
+            <Typography variant="overline" sx={{ color: palette.rose }}>
+              Portfolio studio
+            </Typography>
+            <Typography variant="h3" sx={{ mt: 0.5 }}>
+              {isNew ? 'New portfolio item' : form.title || 'Edit portfolio item'}
+            </Typography>
+            <Typography variant="body2" sx={{ color: palette.ivoryMuted, maxWidth: 680, mt: 1.5 }}>
+              Shape the story, choose the cover, and arrange the image set visitors will browse.
+            </Typography>
+          </Box>
+          <Button type="submit" variant="contained" disabled={saving} sx={{ minWidth: 150 }}>
+            {saving ? 'Saving…' : 'Save'}
+          </Button>
+        </Box>
       </Box>
 
       {error && (
@@ -221,9 +256,19 @@ export default function PortfolioEditPage() {
         </Alert>
       )}
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' }, gap: 4 }}>
-        {/* Details */}
-        <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 } }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1.45fr) minmax(320px, 0.55fr)' },
+          gap: 3,
+          alignItems: 'start',
+          mb: 3,
+        }}
+      >
+        <Box sx={{ ...panelSx, p: { xs: 2.5, md: 4 } }}>
+          <Typography variant="overline" sx={{ color: palette.ivoryMuted }}>
+            Project story
+          </Typography>
           <Typography variant="h5" sx={{ mb: 3 }}>
             Details
           </Typography>
@@ -274,43 +319,23 @@ export default function PortfolioEditPage() {
             onChange={set('fullDescription')}
             helperText="Shown on the project detail page"
           />
-          <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={form.isPublished ?? false}
-                  disabled={!canPublish}
-                  onChange={(e) => setForm((prev) => ({ ...prev, isPublished: e.target.checked }))}
-                />
-              }
-              label="Published"
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={form.isFeatured ?? false}
-                  disabled={!canPublish}
-                  onChange={(e) => setForm((prev) => ({ ...prev, isFeatured: e.target.checked }))}
-                />
-              }
-              label="Featured on homepage"
-            />
-          </Box>
-          {!canPublish && (
-            <Typography variant="caption" sx={{ color: palette.ivoryMuted, display: 'block', mt: 1 }}>
-              Publishing and featuring require the “portfolio.publish” permission — ask a manager to make it live.
-            </Typography>
-          )}
         </Box>
 
-        {/* Cover + gallery */}
-        <Box>
-          <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 }, mb: 4 }}>
-            <Typography variant="h5" sx={{ mb: 3 }}>
-              Cover image
+        <Stack spacing={3}>
+          <Box sx={{ ...panelSx, p: { xs: 2.5, md: 3 } }}>
+            <Typography variant="overline" sx={{ color: palette.ivoryMuted }}>
+              Lead image
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 2.5 }}>
+              Cover
             </Typography>
             {form.coverImageUrl ? (
-              <Box component="img" src={form.coverImageUrl} alt="Cover" sx={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', mb: 2 }} />
+              <Box
+                component="img"
+                src={form.coverImageUrl}
+                alt="Cover"
+                sx={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', mb: 2, display: 'block' }}
+              />
             ) : (
               <Box
                 sx={{
@@ -337,92 +362,199 @@ export default function PortfolioEditPage() {
             <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={uploadCover} />
           </Box>
 
-          <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 } }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>
-              Gallery
+          <Box sx={{ ...panelSx, p: { xs: 2.5, md: 3 } }}>
+            <Typography variant="overline" sx={{ color: palette.ivoryMuted }}>
+              Visibility
             </Typography>
-            {isNew ? (
-              <Typography variant="body2" sx={{ color: palette.ivoryMuted }}>
-                Save the portfolio item first, then upload gallery images here.
-              </Typography>
-            ) : (
-              <>
-                <Typography variant="body2" sx={{ color: palette.ivoryMuted, mb: 2.5 }}>
-                  JPEG, PNG, or WebP — up to 20 at a time. Use the arrows to reorder.
-                </Typography>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  startIcon={<CloudUploadOutlinedIcon />}
-                  onClick={() => galleryInputRef.current?.click()}
-                  disabled={uploadingGallery}
-                  sx={{ mb: 3 }}
-                >
-                  {uploadingGallery ? 'Uploading…' : 'Upload images'}
-                </Button>
-                <input
-                  ref={galleryInputRef}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  multiple
-                  hidden
-                  onChange={uploadGallery}
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Publishing
+            </Typography>
+            <Stack spacing={1.5}>
+              <Box sx={{ border: `1px solid ${palette.inkBorder}`, p: 1.5 }}>
+                <FormControlLabel
+                  sx={{ m: 0, width: '100%', justifyContent: 'space-between' }}
+                  control={
+                    <Switch
+                      checked={form.isPublished ?? false}
+                      disabled={!canPublish}
+                      onChange={(e) => setForm((prev) => ({ ...prev, isPublished: e.target.checked }))}
+                    />
+                  }
+                  label="Published"
+                  labelPlacement="start"
                 />
-                {images.length === 0 ? (
-                  <Typography variant="body2" sx={{ color: palette.ivoryMuted, textAlign: 'center', py: 3 }}>
-                    No gallery images yet.
-                  </Typography>
-                ) : (
-                  images.map((image, index) => (
+              </Box>
+              <Box sx={{ border: `1px solid ${palette.inkBorder}`, p: 1.5 }}>
+                <FormControlLabel
+                  sx={{ m: 0, width: '100%', justifyContent: 'space-between' }}
+                  control={
+                    <Switch
+                      checked={form.isFeatured ?? false}
+                      disabled={!canPublish}
+                      onChange={(e) => setForm((prev) => ({ ...prev, isFeatured: e.target.checked }))}
+                    />
+                  }
+                  label="Featured on homepage"
+                  labelPlacement="start"
+                />
+              </Box>
+            </Stack>
+            {!canPublish && (
+              <Typography variant="caption" sx={{ color: palette.ivoryMuted, display: 'block', mt: 1.5 }}>
+                Publishing and featuring require the “portfolio.publish” permission.
+              </Typography>
+            )}
+          </Box>
+        </Stack>
+      </Box>
+
+      <Box sx={{ ...panelSx, p: { xs: 2.5, md: 4 } }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, flexWrap: 'wrap', gap: 2, mb: 3 }}>
+          <Box>
+            <Typography variant="overline" sx={{ color: palette.ivoryMuted }}>
+              Image set
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flexWrap: 'wrap' }}>
+              <Typography variant="h5">Gallery</Typography>
+              <Chip label={`${images.length} image${images.length === 1 ? '' : 's'}`} size="small" />
+            </Box>
+            <Typography variant="body2" sx={{ color: palette.ivoryMuted, mt: 1 }}>
+              Upload in batches, then use the controls on each card to tune order and metadata.
+            </Typography>
+          </Box>
+          {!isNew && (
+            <Button
+              variant="outlined"
+              startIcon={<CloudUploadOutlinedIcon />}
+              onClick={() => galleryInputRef.current?.click()}
+              disabled={uploadingGallery}
+              sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
+            >
+              {uploadingGallery ? 'Uploading…' : 'Upload images'}
+            </Button>
+          )}
+        </Box>
+
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          hidden
+          onChange={uploadGallery}
+        />
+
+        {isNew ? (
+          <Box sx={{ border: `1px dashed ${palette.inkBorder}`, p: 4, textAlign: 'center', color: palette.ivoryMuted }}>
+            <Typography variant="body2">Save the portfolio item first, then upload gallery images here.</Typography>
+          </Box>
+        ) : images.length === 0 ? (
+          <Box sx={{ border: `1px dashed ${palette.inkBorder}`, p: 5, textAlign: 'center', color: palette.ivoryMuted }}>
+            <Typography variant="body2">No gallery images yet.</Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))', xl: 'repeat(4, minmax(0, 1fr))' },
+              gap: 2.5,
+            }}
+          >
+            {images.map((image, index) => {
+              const isCoverImage = Boolean(form.coverImageUrl && image.imageUrl === form.coverImageUrl);
+
+              return (
+                <Box
+                  key={image._id}
+                  sx={{
+                    border: `1px solid ${palette.inkBorder}`,
+                    bgcolor: palette.ink,
+                    minWidth: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Box sx={{ position: 'relative', aspectRatio: '4 / 3', overflow: 'hidden', bgcolor: palette.inkRaised }}>
                     <Box
-                      key={image._id}
+                      component="img"
+                      src={image.imageUrl}
+                      alt={image.altText || `Gallery image ${index + 1}`}
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    />
+                    <Chip
+                      label={`#${index + 1}`}
+                      size="small"
                       sx={{
-                        display: 'flex',
-                        gap: 1.5,
-                        alignItems: 'center',
-                        py: 1.5,
-                        borderTop: index === 0 ? 'none' : `1px solid ${palette.inkBorder}`,
+                        position: 'absolute',
+                        top: 10,
+                        left: 10,
+                        bgcolor: 'rgba(11, 7, 9, 0.72)',
+                        color: '#f4ede7',
+                        border: '1px solid rgba(244, 237, 231, 0.22)',
                       }}
-                    >
-                      <Box component="img" src={image.imageUrl} alt="" sx={{ width: 72, height: 48, objectFit: 'cover', flexShrink: 0 }} />
-                      <TextField
+                    />
+                    {isCoverImage && (
+                      <Chip
+                        label="Cover"
                         size="small"
-                        placeholder="Alt text"
-                        defaultValue={image.altText ?? ''}
-                        onBlur={(e) => updateImageMeta(image._id, e.target.value)}
-                        sx={{ flex: 1 }}
+                        sx={{
+                          position: 'absolute',
+                          top: 10,
+                          right: 10,
+                          bgcolor: 'rgba(95, 5, 58, 0.82)',
+                          color: '#f4ede7',
+                        }}
                       />
-                      <Tooltip title="Move up">
-                        <span>
-                          <IconButton size="small" disabled={index === 0} onClick={() => moveImage(index, -1)} sx={{ color: palette.ivory }}>
-                            <ArrowUpwardIcon fontSize="inherit" />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                      <Tooltip title="Move down">
-                        <span>
-                          <IconButton
-                            size="small"
-                            disabled={index === images.length - 1}
-                            onClick={() => moveImage(index, 1)}
-                            sx={{ color: palette.ivory }}
-                          >
-                            <ArrowDownwardIcon fontSize="inherit" />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
+                    )}
+                  </Box>
+
+                  <Stack spacing={1.5} sx={{ p: 2, flex: 1 }}>
+                    <TextField
+                      size="small"
+                      label="Alt text"
+                      defaultValue={image.altText ?? ''}
+                      onBlur={(e) => updateImageMeta(image._id, { altText: e.target.value })}
+                    />
+                    <TextField
+                      size="small"
+                      label="Caption"
+                      defaultValue={image.caption ?? ''}
+                      onBlur={(e) => updateImageMeta(image._id, { caption: e.target.value })}
+                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, mt: 'auto' }}>
+                      <Stack direction="row" spacing={1}>
+                        <Tooltip title="Move up">
+                          <span>
+                            <IconButton size="small" disabled={index === 0} onClick={() => moveImage(index, -1)} sx={actionIconSx}>
+                              <ArrowUpwardIcon fontSize="inherit" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Move down">
+                          <span>
+                            <IconButton
+                              size="small"
+                              disabled={index === images.length - 1}
+                              onClick={() => moveImage(index, 1)}
+                              sx={actionIconSx}
+                            >
+                              <ArrowDownwardIcon fontSize="inherit" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      </Stack>
                       <Tooltip title="Delete image">
-                        <IconButton size="small" onClick={() => deleteImage(image._id)} sx={{ color: palette.ivoryMuted }}>
+                        <IconButton size="small" onClick={() => deleteImage(image._id)} sx={{ ...actionIconSx, color: palette.ivoryMuted }}>
                           <DeleteOutlineIcon fontSize="inherit" />
                         </IconButton>
                       </Tooltip>
                     </Box>
-                  ))
-                )}
-              </>
-            )}
+                  </Stack>
+                </Box>
+              );
+            })}
           </Box>
-        </Box>
+        )}
       </Box>
 
       <Snackbar open={Boolean(toast)} autoHideDuration={2600} onClose={() => setToast(null)} message={toast ?? ''} />

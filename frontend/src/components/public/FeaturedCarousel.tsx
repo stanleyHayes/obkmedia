@@ -1,15 +1,12 @@
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
-import Stack from '@mui/material/Stack';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { publicApi } from '../../api/public';
 import type { Portfolio } from '../../api/types';
 import { palette } from '../../theme';
@@ -21,8 +18,6 @@ import SectionDecor from './SectionDecor';
 export default function FeaturedCarousel() {
   const [items, setItems] = useState<Portfolio[] | null>(null);
   const [error, setError] = useState(false);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -40,73 +35,62 @@ export default function FeaturedCarousel() {
     };
   }, []);
 
-  const scrollBy = (direction: 1 | -1) => {
-    const node = scrollerRef.current;
-    if (!node) return;
-    node.scrollBy({ left: direction * node.clientWidth * 0.7, behavior: 'smooth' });
-  };
-
   if (error || (items && items.length === 0)) return null;
+
+  const visibleItems = items?.slice(0, 4) ?? [];
 
   return (
     <Box component="section" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
-      <SectionDecor sx={{ left: { xs: -50, md: 20 }, top: 0 }}>
+      <SectionDecor speed={0.065} sx={{ left: { xs: -50, md: 20 }, top: 0 }}>
         <CollectionsOutlinedIcon sx={{ fontSize: { xs: 220, md: 320 } }} />
       </SectionDecor>
-      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 3 }}>
-          <Reveal>
-            <SectionHeading eyebrow={t('featured.eyebrow')} title={t('featured.title')} />
-          </Reveal>
-          <Stack direction="row" spacing={1} sx={{ mb: { xs: 5, md: 7 } }}>
-            <IconButton aria-label={t('a11y.scrollBack')} onClick={() => scrollBy(-1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
-              <ArrowBackIcon fontSize="small" />
-            </IconButton>
-            <IconButton aria-label={t('a11y.scrollForward')} onClick={() => scrollBy(1)} sx={{ border: `1px solid ${palette.inkBorder}`, color: palette.ivory }}>
-              <ArrowForwardIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        </Box>
-      </Container>
 
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
-        <Box
-          ref={scrollerRef}
-          sx={{
-            display: 'flex',
-            gap: 3,
-            overflowX: 'auto',
-            scrollSnapType: 'x mandatory',
-            pb: 2,
-            mx: -0.5,
-            px: 0.5,
-            '&::-webkit-scrollbar': { height: 6 },
-            '&::-webkit-scrollbar-thumb': { background: palette.wine },
-          }}
-        >
-          {items === null
-            ? Array.from({ length: 3 }, (_, i) => (
-                <Box key={i} sx={{ flex: '0 0 auto', width: { xs: '85%', sm: '46%', md: '31%' } }}>
-                  <Skeleton variant="rectangular" sx={{ aspectRatio: '4 / 3', height: 'auto', bgcolor: palette.inkRaised }} />
-                  <Skeleton width="60%" sx={{ mt: 2 }} />
-                </Box>
-              ))
-            : items.map((item) => (
-                <Box
-                  key={item._id}
-                  sx={{ flex: '0 0 auto', width: { xs: '85%', sm: '46%', md: '31%' }, scrollSnapAlign: 'start' }}
-                >
-                  <PortfolioCard item={item} />
-                </Box>
-              ))}
-        </Box>
-        <Reveal>
-          <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Button variant="outlined" onClick={() => { navigate('/portfolio'); window.scrollTo({ top: 0 }); }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 3, mb: { xs: 3, md: 5 } }}>
+          <Reveal sx={{ '& > div': { mb: 0 } }}>
+            <SectionHeading eyebrow={t('featured.eyebrow')} title={t('featured.title')} />
+          </Reveal>
+          <Reveal variant="soft">
+            <Button component={RouterLink} to="/portfolio" variant="outlined" endIcon={<ArrowForwardIcon />} onClick={() => window.scrollTo({ top: 0 })}>
               {t('featured.viewFull')}
             </Button>
+          </Reveal>
+        </Box>
+
+        {items === null ? (
+          <Box>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
+                gap: { xs: 3, md: 4 },
+              }}
+            >
+              {Array.from({ length: 4 }, (_, i) => (
+                <Box key={i}>
+                  <Skeleton variant="rectangular" sx={{ aspectRatio: '4 / 3', height: 'auto', bgcolor: palette.inkRaised }} />
+                  <Skeleton width="60%" sx={{ mt: 2 }} />
+                  <Skeleton width="86%" />
+                </Box>
+              ))}
+            </Box>
           </Box>
-        </Reveal>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
+              gap: { xs: 3, md: 4 },
+              alignItems: 'stretch',
+            }}
+          >
+            {visibleItems.map((item, index) => (
+              <Reveal key={item._id} delay={(index % 2) * 90} variant={index % 2 === 0 ? 'tilt-left' : 'tilt-right'} sx={{ height: '100%' }}>
+                <PortfolioCard item={item} />
+              </Reveal>
+            ))}
+          </Box>
+        )}
       </Container>
     </Box>
   );

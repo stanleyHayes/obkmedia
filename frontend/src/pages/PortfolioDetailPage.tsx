@@ -15,7 +15,8 @@ import { publicApi } from '../api/public';
 import type { Portfolio, PortfolioImage } from '../api/types';
 import Reveal from '../components/Reveal';
 import Lightbox from '../components/public/Lightbox';
-import PortfolioCard, { categoryName } from '../components/public/PortfolioCard';
+import PortfolioCard from '../components/public/PortfolioCard';
+import { categoryName } from '../components/public/portfolioUtils';
 import Watermark from '../components/public/Watermark';
 import { BRAND } from '../content';
 import Seo from '../seo/Seo';
@@ -31,15 +32,12 @@ export default function PortfolioDetailPage() {
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadedSlug, setLoadedSlug] = useState<string | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!slug) return;
     let cancelled = false;
-    setLoading(true);
-    setNotFound(false);
-    setError(false);
-    setItem(null);
     publicApi
       .portfolioBySlug(slug)
       .then((res) => {
@@ -47,21 +45,31 @@ export default function PortfolioDetailPage() {
         setItem(res.item);
         setImages(res.images);
         setRelated(res.related);
+        setNotFound(false);
+        setError(false);
       })
       .catch((err) => {
         if (cancelled) return;
+        setItem(null);
+        setImages([]);
+        setRelated([]);
         if (err instanceof ApiError && err.status === 404) setNotFound(true);
         else setError(true);
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setLoadedSlug(slug);
+        }
       });
     return () => {
       cancelled = true;
     };
   }, [slug]);
 
-  if (notFound) {
+  const pageLoading = loading || loadedSlug !== slug;
+
+  if (!pageLoading && notFound) {
     return (
       <Container maxWidth="md" sx={{ pt: 24, pb: 16, textAlign: 'center' }}>
         <Typography variant="h2" sx={{ mb: 2 }}>
@@ -77,7 +85,7 @@ export default function PortfolioDetailPage() {
     );
   }
 
-  if (error) {
+  if (!pageLoading && error) {
     return (
       <Container maxWidth="md" sx={{ pt: 24, pb: 16 }}>
         <Alert severity="error">{t('detail.error')}</Alert>
@@ -106,7 +114,7 @@ export default function PortfolioDetailPage() {
 
       {/* Cover */}
       <Box sx={{ position: 'relative', height: { xs: '62vh', md: '78vh' }, overflow: 'hidden' }}>
-        {loading || !item ? (
+        {pageLoading || !item ? (
           <Skeleton variant="rectangular" sx={{ width: '100%', height: '100%', bgcolor: palette.inkRaised }} />
         ) : (
           <>
@@ -174,7 +182,7 @@ export default function PortfolioDetailPage() {
         )}
 
         {/* Gallery */}
-        {loading ? (
+        {pageLoading ? (
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
             {Array.from({ length: 4 }, (_, i) => (
               <Skeleton key={i} variant="rectangular" sx={{ aspectRatio: '3 / 2', height: 'auto', bgcolor: palette.inkRaised }} />

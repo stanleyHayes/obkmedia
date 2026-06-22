@@ -14,6 +14,8 @@ export const PERMISSIONS = {
   'users.manage': 'Create, edit, deactivate, and delete admin users',
   'roles.view': 'View roles and their permissions',
   'roles.manage': 'Create, edit, and delete roles',
+  'settings.view': 'View site content settings',
+  'settings.manage': 'Edit site content: branding, hero, about, pricing, services, contact, and socials',
 } as const;
 
 export type Permission = keyof typeof PERMISSIONS;
@@ -46,6 +48,8 @@ export const SYSTEM_ROLES: Array<{
       'messages.manage',
       'users.view',
       'roles.view',
+      'settings.view',
+      'settings.manage',
     ],
   },
   {

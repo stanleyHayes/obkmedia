@@ -14,12 +14,17 @@ export default function WhatsAppFab() {
         aria-label="Chat on WhatsApp"
         sx={{
           position: 'fixed',
-          right: { xs: 18, md: 28 },
-          bottom: { xs: 18, md: 28 },
+          right: { xs: 16, md: 28 },
+          bottom: { xs: 'max(18px, env(safe-area-inset-bottom))', md: 28 },
+          width: { xs: 48, md: 56 },
+          height: { xs: 48, md: 56 },
+          minHeight: { xs: 48, md: 56 },
           bgcolor: '#1faf57',
           color: '#fff',
-          zIndex: 1500,
-          '&:hover': { bgcolor: '#178a45' },
+          zIndex: (theme) => theme.zIndex.speedDial,
+          boxShadow: '0 14px 32px rgba(20, 88, 47, 0.28)',
+          '& svg': { fontSize: { xs: '1.35rem', md: '1.5rem' } },
+          '&:hover': { bgcolor: '#178a45', transform: 'translateY(-2px)' },
         }}
       >
         <WhatsAppIcon />

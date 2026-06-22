@@ -45,19 +45,26 @@ export function ListSkeleton({ rows = 5, thumb = false }: { rows?: number; thumb
 export function DashboardSkeleton() {
   return (
     <Box>
-      <HeadingSkeleton />
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(3, 1fr)' }, gap: 2.5 }}>
-        {Array.from({ length: 6 }, (_, i) => (
-          <Skeleton key={i} variant="rectangular" height={108} sx={shimmer} />
-        ))}
+      <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 3, md: 4.5 }, mb: 3 }}>
+        <Skeleton variant="rounded" width={132} height={26} sx={{ ...shimmer, mb: 2 }} />
+        <Skeleton variant="text" width="58%" height={70} sx={shimmer} />
+        <Skeleton variant="text" width="42%" height={24} sx={shimmer} />
+        <Box sx={{ display: 'flex', gap: 1.5, mt: 4 }}>
+          <Skeleton variant="rounded" width={150} height={44} sx={shimmer} />
+          <Skeleton variant="rounded" width={130} height={44} sx={shimmer} />
+        </Box>
       </Box>
-      <Skeleton variant="text" width={200} height={40} sx={{ ...shimmer, mt: 6, mb: 2 }} />
-      <Box sx={{ border: `1px solid ${palette.inkBorder}` }}>
-        {Array.from({ length: 4 }, (_, i) => (
-          <Box key={i} sx={{ p: 2.5, borderTop: i === 0 ? 'none' : `1px solid ${palette.inkBorder}` }}>
-            <Skeleton variant="text" width="30%" height={22} sx={shimmer} />
-            <Skeleton variant="text" width="70%" height={18} sx={shimmer} />
-          </Box>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1.42fr 0.58fr' }, gap: 3, mb: 3 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} variant="rectangular" height={148} sx={shimmer} />
+          ))}
+        </Box>
+        <Skeleton variant="rectangular" height={320} sx={shimmer} />
+      </Box>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', xl: '0.95fr 1.05fr' }, gap: 3 }}>
+        {Array.from({ length: 6 }, (_, i) => (
+          <Skeleton key={i} variant="rectangular" height={72} sx={shimmer} />
         ))}
       </Box>
     </Box>
@@ -90,9 +97,13 @@ export function CardGridSkeleton({ count = 4 }: { count?: number }) {
 export function FormSkeleton() {
   return (
     <Box>
-      <Skeleton variant="text" width={140} height={28} sx={{ ...shimmer, mb: 2 }} />
-      <HeadingSkeleton />
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' }, gap: 4 }}>
+      <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 }, mb: 3 }}>
+        <Skeleton variant="text" width={140} height={28} sx={{ ...shimmer, mb: 2 }} />
+        <Skeleton variant="text" width="42%" height={58} sx={shimmer} />
+        <Skeleton variant="text" width="56%" height={24} sx={shimmer} />
+        <Skeleton variant="rounded" width={150} height={44} sx={{ ...shimmer, mt: 2 }} />
+      </Box>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1.45fr) minmax(320px, 0.55fr)' }, gap: 3, alignItems: 'start', mb: 3 }}>
         <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 } }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2.5 }}>
             {Array.from({ length: 6 }, (_, i) => (
@@ -102,11 +113,28 @@ export function FormSkeleton() {
           <Skeleton variant="rounded" height={80} sx={{ ...shimmer, mt: 2.5 }} />
           <Skeleton variant="rounded" height={140} sx={{ ...shimmer, mt: 2.5 }} />
         </Box>
-        <Box>
-          <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 }, mb: 4 }}>
+        <Box sx={{ display: 'grid', gap: 3 }}>
+          <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 3 } }}>
             <Skeleton variant="rectangular" sx={{ ...shimmer, aspectRatio: '4 / 3', height: 'auto', mb: 2 }} />
             <Skeleton variant="rounded" height={42} sx={shimmer} />
           </Box>
+          <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 3 } }}>
+            <Skeleton variant="text" width="45%" height={30} sx={shimmer} />
+            <Skeleton variant="rounded" height={54} sx={{ ...shimmer, mt: 2 }} />
+            <Skeleton variant="rounded" height={54} sx={{ ...shimmer, mt: 1.5 }} />
+          </Box>
+        </Box>
+      </Box>
+      <Box sx={{ border: `1px solid ${palette.inkBorder}`, bgcolor: palette.inkRaised, p: { xs: 2.5, md: 4 } }}>
+        <Skeleton variant="text" width="24%" height={34} sx={{ ...shimmer, mb: 2.5 }} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))', xl: 'repeat(4, minmax(0, 1fr))' }, gap: 2.5 }}>
+          {Array.from({ length: 8 }, (_, i) => (
+            <Box key={i} sx={{ border: `1px solid ${palette.inkBorder}`, p: 2 }}>
+              <Skeleton variant="rectangular" sx={{ ...shimmer, aspectRatio: '4 / 3', height: 'auto', mb: 2 }} />
+              <Skeleton variant="rounded" height={42} sx={shimmer} />
+              <Skeleton variant="rounded" height={42} sx={{ ...shimmer, mt: 1.5 }} />
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>

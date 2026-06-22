@@ -27,7 +27,7 @@ export default function AwardsSection() {
       }}
     >
       {/* Decorative oversized trophy glyph — brighter here against the wine bg */}
-      <SectionDecor sx={{ right: { xs: -40, md: 40 }, top: { xs: -30, md: 20 }, color: 'rgba(244,237,231,0.06)' }}>
+      <SectionDecor speed={-0.075} sx={{ right: { xs: -40, md: 40 }, top: { xs: -30, md: 20 }, color: 'rgba(244,237,231,0.06)' }}>
         <EmojiEventsOutlinedIcon sx={{ fontSize: { xs: 220, md: 340 } }} />
       </SectionDecor>
 
@@ -42,10 +42,11 @@ export default function AwardsSection() {
             gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
             gap: { xs: 3, md: 4 },
             mb: { xs: 7, md: 10 },
+            perspective: '1200px',
           }}
         >
           {awards.map((award, index) => (
-            <Reveal key={award.title} delay={index * 160}>
+            <Reveal key={award.title} delay={index * 160} variant={index % 2 === 0 ? 'tilt-left' : 'tilt-right'}>
               <Box
                 sx={{
                   position: 'relative',
@@ -54,9 +55,11 @@ export default function AwardsSection() {
                   border: '1px solid rgba(244,237,231,0.18)',
                   bgcolor: 'rgba(11,7,9,0.22)',
                   backdropFilter: 'blur(2px)',
+                  transform: 'translateZ(0)',
+                  transformStyle: 'preserve-3d',
                   transition: 'transform 360ms ease, border-color 360ms ease, background-color 360ms ease',
                   '&:hover': {
-                    transform: 'translateY(-6px)',
+                    transform: 'translate3d(0, -8px, 32px) rotateX(2deg)',
                     borderColor: onDark.rose,
                     bgcolor: 'rgba(11,7,9,0.34)',
                   },

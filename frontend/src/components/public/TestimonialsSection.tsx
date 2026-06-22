@@ -15,7 +15,7 @@ export default function TestimonialsSection() {
   const { t } = useTranslation();
   return (
     <Box component="section" sx={{ py: { xs: 10, md: 16 }, position: 'relative', overflow: 'hidden' }}>
-      <SectionDecor sx={{ right: { xs: -40, md: 60 }, top: { xs: 10, md: -10 } }}>
+      <SectionDecor speed={-0.055} sx={{ right: { xs: -40, md: 60 }, top: { xs: 10, md: -10 } }}>
         <FormatQuoteIcon sx={{ fontSize: { xs: 200, md: 300 }, transform: 'scaleX(-1)' }} />
       </SectionDecor>
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
@@ -23,7 +23,7 @@ export default function TestimonialsSection() {
           <SectionHeading eyebrow={t('testimonials.eyebrow')} title={t('testimonials.title')} align="center" />
         </Reveal>
         {TESTIMONIALS.map((testimonial) => (
-          <Reveal key={testimonial.name} delay={120}>
+          <Reveal key={testimonial.name} delay={120} variant="soft">
             <Box sx={{ textAlign: 'center' }}>
               <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'center', mb: 3 }}>
                 {Array.from({ length: testimonial.rating }, (_, i) => (

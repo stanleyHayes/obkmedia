@@ -12,6 +12,7 @@ import { adminMessagesRouter } from './routes/adminMessages.js';
 import { adminNotificationsRouter } from './routes/adminNotifications.js';
 import { adminPortfolioRouter } from './routes/adminPortfolio.js';
 import { adminRolesRouter } from './routes/adminRoles.js';
+import { adminSettingsRouter } from './routes/adminSettings.js';
 import { adminStatsRouter } from './routes/adminStats.js';
 import { adminUsersRouter } from './routes/adminUsers.js';
 import { publicRouter } from './routes/public.js';
@@ -55,6 +56,7 @@ export function createApp(): express.Express {
   app.use('/api/admin/stats', requireAuth, adminStatsRouter);
   app.use('/api/admin/users', requireAuth, adminUsersRouter);
   app.use('/api/admin/roles', requireAuth, adminRolesRouter);
+  app.use('/api/admin/settings', requireAuth, adminSettingsRouter);
   // Spec alias: POST /api/admin/uploads/image
   app.use(
     '/api/admin/uploads',

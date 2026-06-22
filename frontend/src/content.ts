@@ -28,7 +28,7 @@ export const BRAND = {
 export const SOCIALS = [
   { name: 'TikTok', url: 'https://www.tiktok.com/@obkmedia' },
   { name: 'YouTube', url: 'https://www.youtube.com/channel/UCKc_qTRt39Dx6XrVf9maJnA' },
-  { name: 'Facebook', url: 'https://www.facebook.com' }, // profile: Onboard Onboard
+  { name: 'Facebook', url: 'https://web.facebook.com/obkmedia99' },
 ] as const;
 
 // Client names/ratings for testimonials. The quote and role text are translated

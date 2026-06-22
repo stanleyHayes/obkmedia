@@ -1,5 +1,5 @@
 import { api } from './client';
-import type { Category, ContactPayload, Portfolio, PortfolioImage } from './types';
+import type { Category, ContactPayload, Portfolio, PortfolioImage, SiteSettings } from './types';
 
 export const publicApi = {
   listPortfolio: (params?: { category?: string; search?: string }) => {
@@ -15,6 +15,7 @@ export const publicApi = {
       `/api/public/portfolio/${encodeURIComponent(slug)}`,
     ),
   categories: () => api.get<{ items: Category[] }>('/api/public/categories'),
+  settings: () => api.get<{ settings: SiteSettings | null }>('/api/public/settings'),
   submitContact: (payload: ContactPayload) =>
     api.post<{ ok: boolean; message: string }>('/api/public/contact', payload),
 };

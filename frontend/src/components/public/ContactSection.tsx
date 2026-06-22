@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { BRAND, SOCIALS } from '../../content';
+import { useBrand, useSocials } from '../../SiteSettingsContext';
 import { onDark, palette } from '../../theme';
 import Reveal from '../Reveal';
 import SectionHeading from '../SectionHeading';
@@ -24,15 +24,17 @@ const overlineSx = {
 
 export default function ContactSection() {
   const { t } = useTranslation();
+  const brand = useBrand();
+  const socials = useSocials();
   const details = [
-    { label: t('contact.labels.email'), value: BRAND.email, href: `mailto:${BRAND.email}` },
-    { label: t('contact.labels.whatsapp'), value: BRAND.phoneIntl, href: BRAND.whatsappUrl },
-    { label: t('contact.labels.studio'), value: BRAND.location, href: BRAND.mapsUrl },
+    { label: t('contact.labels.email'), value: brand.email, href: `mailto:${brand.email}` },
+    { label: t('contact.labels.whatsapp'), value: brand.phoneIntl, href: brand.whatsappUrl },
+    { label: t('contact.labels.studio'), value: brand.location, href: brand.mapsUrl },
     { label: t('contact.labels.hours'), value: t('contact.hours') },
   ];
   return (
     <Box component="section" id="contact" sx={{ py: { xs: 10, md: 16 }, bgcolor: palette.inkRaised, position: 'relative', overflow: 'hidden' }}>
-      <SectionDecor sx={{ right: { xs: -50, md: 30 }, bottom: 10 }}>
+      <SectionDecor speed={0.06} sx={{ right: { xs: -50, md: 30 }, bottom: 10 }}>
         <EmailOutlinedIcon sx={{ fontSize: { xs: 220, md: 340 } }} />
       </SectionDecor>
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
@@ -102,7 +104,7 @@ export default function ContactSection() {
                     : undefined,
                 } as const;
                 return (
-                  <Reveal key={detail.label} delay={140 + index * 90}>
+                  <Reveal key={detail.label} delay={140 + index * 90} variant="soft">
                     {detail.href ? (
                       <Box
                         component="a"
@@ -122,10 +124,10 @@ export default function ContactSection() {
             </Box>
 
             {/* Boxed WhatsApp CTA — wine fill sweeps in on hover */}
-            <Reveal delay={500}>
+            <Reveal delay={500} variant="tilt-left">
               <Box
                 component="a"
-                href={BRAND.whatsappUrl}
+                href={brand.whatsappUrl}
                 target="_blank"
                 rel="noopener"
                 sx={{
@@ -183,13 +185,13 @@ export default function ContactSection() {
             </Reveal>
 
             {/* Indexed social links */}
-            <Reveal delay={560}>
+            <Reveal delay={560} variant="soft">
               <Box sx={{ mt: 5 }}>
                 <Typography component="p" sx={{ ...overlineSx, mb: 1.75 }}>
                   {t('contact.labels.follow')}
                 </Typography>
                 <Stack direction="row" spacing={3.5} sx={{ flexWrap: 'wrap', rowGap: 1.5 }}>
-                  {SOCIALS.map((social, index) => (
+                  {socials.map((social, index) => (
                     <Box
                       key={social.name}
                       component="a"
@@ -219,7 +221,7 @@ export default function ContactSection() {
               </Box>
             </Reveal>
           </Box>
-          <Reveal delay={150}>
+          <Reveal delay={150} variant="tilt-right">
             <ContactForm />
           </Reveal>
         </Box>

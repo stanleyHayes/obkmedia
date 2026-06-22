@@ -5,7 +5,10 @@ import AwardsSection from '../components/public/AwardsSection';
 import ContactSection from '../components/public/ContactSection';
 import FeaturedCarousel from '../components/public/FeaturedCarousel';
 import HeroSection from '../components/public/HeroSection';
+import ExperienceSection from '../components/public/ExperienceSection';
+import PricingSection from '../components/public/PricingSection';
 import ServicesSection from '../components/public/ServicesSection';
+import SignatureMomentsSection from '../components/public/SignatureMomentsSection';
 import TestimonialsSection from '../components/public/TestimonialsSection';
 import Seo from '../seo/Seo';
 
@@ -26,8 +29,11 @@ export default function HomePage() {
     <>
       <Seo />
       <HeroSection />
+      <SignatureMomentsSection />
       <AboutSection />
       <ServicesSection />
+      <PricingSection />
+      <ExperienceSection />
       <FeaturedCarousel />
       <AwardsSection />
       <TestimonialsSection />

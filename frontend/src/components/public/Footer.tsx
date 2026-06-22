@@ -15,6 +15,7 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -25,8 +26,10 @@ import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { BRAND } from '../../content';
+import { useBrand } from '../../SiteSettingsContext';
 import { palette } from '../../theme';
+import ParallaxFrame from '../ParallaxFrame';
+import Reveal from '../Reveal';
 import SocialLinks from './SocialLinks';
 
 const EXPLORE = [
@@ -43,20 +46,52 @@ const LEGAL = [
   { key: 'legalCopyright', to: '/terms', icon: <CopyrightOutlinedIcon /> },
 ] as const;
 
-const linkSx = {
+const SERVICE_HIGHLIGHTS = [0, 1, 2, 4] as const;
+
+const eyebrowSx = {
+  color: palette.rose,
+  display: 'block',
+  mb: 1.5,
+} as const;
+
+const footerLinkSx = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: 1.25,
+  width: 'fit-content',
   color: palette.ivoryMuted,
   fontSize: '0.9rem',
   fontWeight: 300,
-  width: 'fit-content',
-  transition: 'color 200ms ease, padding-left 200ms ease',
+  textDecoration: 'none',
+  transition: 'color 220ms ease, transform 220ms ease',
   '& svg': { fontSize: '1.05rem', color: palette.rose, opacity: 0.85 },
-  '&:hover': { color: palette.rose, pl: 0.5 },
-};
+  '&:hover': { color: palette.ivory, transform: 'translateX(4px)' },
+} as const;
 
-/** Section heading with a leading icon. */
+const contactRowSx = {
+  display: 'grid',
+  gridTemplateColumns: '32px minmax(0, 1fr) auto',
+  alignItems: 'center',
+  gap: 1.5,
+  py: 1.75,
+  color: palette.ivoryMuted,
+  textDecoration: 'none',
+  borderBottom: `1px solid ${palette.inkBorder}`,
+  '& svg': { color: palette.rose, fontSize: '1.05rem' },
+  '& .obk-footer-value': {
+    color: palette.ivory,
+    transition: 'color 220ms ease',
+    wordBreak: 'break-word',
+  },
+  '& .obk-footer-arrow': {
+    opacity: 0,
+    transform: 'translate(-6px, 6px)',
+    transition: 'opacity 220ms ease, transform 220ms ease',
+  },
+  '&:hover .obk-footer-value': { color: palette.rose },
+  '&:hover .obk-footer-arrow': { opacity: 1, transform: 'translate(0, 0)' },
+} as const;
+
 function ColumnHeading({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
     <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 2.5 }}>
@@ -68,10 +103,63 @@ function ColumnHeading({ icon, children }: { icon: ReactNode; children: ReactNod
   );
 }
 
+function ContactRow({
+  href,
+  icon,
+  label,
+  value,
+}: {
+  href?: string;
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  const inner = (
+    <>
+      <Box sx={{ display: 'flex' }}>{icon}</Box>
+      <Box sx={{ minWidth: 0 }}>
+        <Typography
+          component="span"
+          sx={{
+            display: 'block',
+            color: palette.ivoryMuted,
+            fontSize: '0.62rem',
+            fontWeight: 500,
+            letterSpacing: '0.24em',
+            textTransform: 'uppercase',
+          }}
+        >
+          {label}
+        </Typography>
+        <Typography className="obk-footer-value" component="span" sx={{ display: 'block', mt: 0.4, fontSize: '0.95rem' }}>
+          {value}
+        </Typography>
+      </Box>
+      <ArrowOutwardIcon className="obk-footer-arrow" sx={{ fontSize: '0.95rem' }} />
+    </>
+  );
+
+  if (!href) return <Box sx={contactRowSx}>{inner}</Box>;
+
+  return (
+    <Box
+      component="a"
+      href={href}
+      target={href.startsWith('http') ? '_blank' : undefined}
+      rel={href.startsWith('http') ? 'noopener' : undefined}
+      sx={contactRowSx}
+    >
+      {inner}
+    </Box>
+  );
+}
+
 export default function Footer() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const brand = useBrand();
   const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const serviceHighlights = SERVICE_HIGHLIGHTS.map((index) => t(`services.items.${index}.title`));
 
   return (
     <Box
@@ -80,10 +168,19 @@ export default function Footer() {
         position: 'relative',
         overflow: 'hidden',
         borderTop: `1px solid ${palette.inkBorder}`,
-        background: `linear-gradient(180deg, ${palette.ink} 0%, ${palette.inkRaised} 100%)`,
+        background: `linear-gradient(180deg, ${palette.inkRaised} 0%, ${palette.ink} 42%, ${palette.inkRaised} 100%)`,
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          opacity: 0.22,
+          backgroundImage: `linear-gradient(90deg, ${palette.inkBorder} 1px, transparent 1px), linear-gradient(180deg, ${palette.inkBorder} 1px, transparent 1px)`,
+          backgroundSize: '88px 88px',
+          maskImage: 'linear-gradient(180deg, transparent 0%, #000 12%, #000 82%, transparent 100%)',
+        },
       }}
     >
-      {/* Wine accent hairline across the very top */}
       <Box
         aria-hidden
         sx={{
@@ -91,148 +188,225 @@ export default function Footer() {
           top: 0,
           left: 0,
           right: 0,
-          height: '2px',
-          background: `linear-gradient(90deg, transparent, ${palette.wineBright}, transparent)`,
+          height: 2,
+          background: `linear-gradient(90deg, transparent, ${palette.wineBright}, ${palette.rose}, transparent)`,
         }}
       />
 
-      <Container maxWidth="xl" sx={{ position: 'relative', pt: { xs: 9, md: 13 } }}>
-        {/* Closing call-to-action */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            gap: 4,
-            pb: { xs: 7, md: 9 },
-          }}
-        >
-          <Box>
-            <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mb: 2 }}>
-              {BRAND.tagline}
-            </Typography>
-            <Typography variant="h2" sx={{ fontSize: { xs: '2.3rem', md: '3.4rem' }, maxWidth: 640, lineHeight: 1.08 }}>
-              {t('footer.cta')}{' '}
-              <Box component="em" sx={{ color: palette.rose, fontStyle: 'italic' }}>
-                {t('footer.ctaEm')}
-              </Box>
-              .
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            size="large"
-            endIcon={<ArrowOutwardIcon />}
-            onClick={() => navigate('/#contact')}
-          >
-            {t('nav.book')}
-          </Button>
-        </Box>
-
-        {/* Link + contact grid */}
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1.6fr 1fr 1fr 1.2fr' },
-            gap: { xs: 5, md: 4 },
-            borderTop: `1px solid ${palette.inkBorder}`,
-            pt: { xs: 6, md: 7 },
-            pb: { xs: 8, md: 10 },
+            gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1.35fr) minmax(340px, 0.65fr)' },
+            gap: { xs: 5, md: 7 },
+            pt: { xs: 8, md: 12 },
+            pb: { xs: 6, md: 8 },
+            borderBottom: `1px solid ${palette.inkBorder}`,
           }}
         >
-          <Box sx={{ maxWidth: 360 }}>
-            <Typography variant="h4" sx={{ letterSpacing: '0.08em', mb: 2 }}>
-              OBK{' '}
-              <Box component="span" sx={{ fontStyle: 'italic', color: palette.rose }}>
-                MEDIA
-              </Box>
-            </Typography>
-            <Typography variant="body2" sx={{ color: palette.ivoryMuted, mb: 3 }}>
-              {BRAND.intro}
-            </Typography>
-            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-              <PlaceOutlinedIcon sx={{ fontSize: '1.05rem', color: palette.rose }} />
-              <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.1em' }}>
-                {BRAND.location} · {BRAND.areasServed}
+          <Reveal variant="tilt-left">
+            <Box sx={{ maxWidth: 780 }}>
+              <Typography variant="overline" sx={eyebrowSx}>
+                {brand.tagline}
               </Typography>
+              <Typography
+                variant="h2"
+                sx={{
+                  maxWidth: 760,
+                  fontSize: { xs: '2.45rem', sm: '3rem', md: '4rem' },
+                  lineHeight: 1,
+                }}
+              >
+                {t('footer.cta')}{' '}
+                <Box component="em" sx={{ color: palette.rose, fontStyle: 'italic' }}>
+                  {t('footer.ctaEm')}
+                </Box>
+                .
+              </Typography>
+              <Typography variant="body1" sx={{ color: palette.ivoryMuted, maxWidth: 620, mt: 3 }}>
+                {t('footer.ctaBody')}
+              </Typography>
+
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: { xs: 'stretch', sm: 'center' }, mt: 4 }}>
+                <Button variant="contained" size="large" endIcon={<ArrowOutwardIcon />} onClick={() => navigate('/#contact')}>
+                  {t('nav.book')}
+                </Button>
+                <Button variant="outlined" size="large" component={RouterLink} to="/portfolio" onClick={toTop}>
+                  {t('hero.viewPortfolio')}
+                </Button>
+              </Stack>
             </Box>
-          </Box>
+          </Reveal>
 
-          <Box>
-            <ColumnHeading icon={<ExploreOutlinedIcon />}>{t('footer.explore')}</ColumnHeading>
-            <Stack spacing={1.5}>
-              {EXPLORE.map((item) => (
-                <Link
-                  key={item.key}
-                  component={RouterLink}
-                  to={item.to}
-                  onClick={() => item.to === '/' && window.scrollTo({ top: 0 })}
-                  sx={linkSx}
-                >
-                  {item.icon}
-                  {t(`nav.${item.key}`)}
-                </Link>
-              ))}
-            </Stack>
-          </Box>
-
-          <Box>
-            <ColumnHeading icon={<GavelOutlinedIcon />}>{t('footer.legal')}</ColumnHeading>
-            <Stack spacing={1.5}>
-              {LEGAL.map((item) => (
-                <Link key={item.key} component={RouterLink} to={item.to} onClick={toTop} sx={linkSx}>
-                  {item.icon}
-                  {t(`footer.${item.key}`)}
-                </Link>
-              ))}
-            </Stack>
-          </Box>
-
-          <Box>
-            <ColumnHeading icon={<ConnectWithoutContactOutlinedIcon />}>{t('footer.getInTouch')}</ColumnHeading>
-            <Stack spacing={1.5}>
-              <Link href={`mailto:${BRAND.email}`} sx={linkSx}>
-                <EmailOutlinedIcon />
-                {BRAND.email}
-              </Link>
-              <Link href={`tel:+233546175921`} sx={linkSx}>
-                <PhoneOutlinedIcon />
-                {BRAND.phoneIntl}
-              </Link>
-              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1.25, color: palette.ivoryMuted }}>
-                <ScheduleOutlinedIcon sx={{ fontSize: '1.05rem', color: palette.rose, opacity: 0.85 }} />
-                <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.08em' }}>
-                  {t('contact.hours')}
+          <Reveal delay={120} variant="tilt-right">
+            <Box
+              sx={{
+                alignSelf: 'stretch',
+                border: `1px solid ${palette.inkBorder}`,
+                background: `linear-gradient(145deg, ${palette.decor}, transparent 58%)`,
+                p: { xs: 3, sm: 4 },
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: 300,
+              }}
+            >
+              <Box>
+                <Typography variant="overline" sx={eyebrowSx}>
+                  {t('footer.contactCardTitle')}
+                </Typography>
+                <Typography variant="h4" sx={{ maxWidth: 320, mb: 2 }}>
+                  {t('footer.contactCardBody')}
                 </Typography>
               </Box>
-              <Box sx={{ pt: 1.5 }}>
-                <SocialLinks color={palette.ivoryMuted} size={20} />
-              </Box>
-            </Stack>
-          </Box>
+              <Stack spacing={1.25}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  href={brand.whatsappUrl}
+                  target="_blank"
+                  rel="noopener"
+                  startIcon={<WhatsAppIcon />}
+                  endIcon={<ArrowOutwardIcon />}
+                  fullWidth
+                >
+                  {t('contact.whatsapp')}
+                </Button>
+                <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.08em', textAlign: 'center' }}>
+                  {t('footer.responseValue')} · {brand.phoneIntl}
+                </Typography>
+              </Stack>
+            </Box>
+          </Reveal>
         </Box>
 
-        {/* Oversized brand watermark */}
         <Box
-          aria-hidden
           sx={{
-            fontFamily: '"Cormorant Garamond", serif',
-            fontWeight: 600,
-            textAlign: 'center',
-            lineHeight: 0.8,
-            fontSize: 'clamp(3.5rem, 17vw, 16rem)',
-            letterSpacing: '0.04em',
-            color: palette.ghost,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            mb: { xs: -1, md: -3 },
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: '1.35fr 0.78fr 0.78fr 1.1fr' },
+            gap: { xs: 5, md: 5 },
+            py: { xs: 6, md: 8 },
+            borderBottom: `1px solid ${palette.inkBorder}`,
           }}
         >
-          OBK MEDIA
+          <Reveal variant="soft">
+            <Box sx={{ maxWidth: 470 }}>
+              <Typography variant="h4" sx={{ letterSpacing: '0.08em', mb: 2 }}>
+                OBK{' '}
+                <Box component="span" sx={{ fontStyle: 'italic', color: palette.rose }}>
+                  MEDIA
+                </Box>
+              </Typography>
+              <Typography variant="body2" sx={{ color: palette.ivoryMuted, mb: 3 }}>
+                {brand.intro}
+              </Typography>
+              <Box
+                sx={{
+                  borderLeft: `1px solid ${palette.rose}`,
+                  pl: 2,
+                  mb: 3.5,
+                }}
+              >
+                <Typography variant="caption" sx={{ color: palette.ivoryMuted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                  {t('footer.studioNote')}
+                </Typography>
+              </Box>
+              <Typography variant="overline" sx={{ color: palette.rose, display: 'block', mb: 1.5 }}>
+                {t('footer.services')}
+              </Typography>
+              <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 1 }}>
+                {serviceHighlights.map((service) => (
+                  <Box
+                    key={service}
+                    sx={{
+                      border: `1px solid ${palette.inkBorder}`,
+                      color: palette.ivoryMuted,
+                      px: 1.4,
+                      py: 0.8,
+                      fontSize: '0.68rem',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {service}
+                  </Box>
+                ))}
+              </Stack>
+            </Box>
+          </Reveal>
+
+          <Reveal delay={80} variant="soft">
+            <Box>
+              <ColumnHeading icon={<ExploreOutlinedIcon />}>{t('footer.explore')}</ColumnHeading>
+              <Stack spacing={1.45}>
+                {EXPLORE.map((item) => (
+                  <Link
+                    key={item.key}
+                    component={RouterLink}
+                    to={item.to}
+                    underline="none"
+                    onClick={() => item.to === '/' && toTop()}
+                    sx={footerLinkSx}
+                  >
+                    {item.icon}
+                    {t(`nav.${item.key}`)}
+                  </Link>
+                ))}
+              </Stack>
+            </Box>
+          </Reveal>
+
+          <Reveal delay={140} variant="soft">
+            <Box>
+              <ColumnHeading icon={<GavelOutlinedIcon />}>{t('footer.legal')}</ColumnHeading>
+              <Stack spacing={1.45}>
+                {LEGAL.map((item) => (
+                  <Link key={item.key} component={RouterLink} to={item.to} underline="none" onClick={toTop} sx={footerLinkSx}>
+                    {item.icon}
+                    {t(`footer.${item.key}`)}
+                  </Link>
+                ))}
+              </Stack>
+            </Box>
+          </Reveal>
+
+          <Reveal delay={200} variant="soft">
+            <Box>
+              <ColumnHeading icon={<ConnectWithoutContactOutlinedIcon />}>{t('footer.getInTouch')}</ColumnHeading>
+              <Box sx={{ borderTop: `1px solid ${palette.inkBorder}` }}>
+                <ContactRow href={`mailto:${brand.email}`} icon={<EmailOutlinedIcon />} label={t('contact.labels.email')} value={brand.email} />
+                <ContactRow href={`tel:${brand.phoneIntl.replace(/\s+/g, '')}`} icon={<PhoneOutlinedIcon />} label={t('contact.labels.whatsapp')} value={brand.phoneIntl} />
+                <ContactRow href={brand.mapsUrl} icon={<PlaceOutlinedIcon />} label={t('contact.labels.studio')} value={brand.location} />
+                <ContactRow icon={<ScheduleOutlinedIcon />} label={t('contact.labels.hours')} value={t('contact.hours')} />
+              </Box>
+              <Box sx={{ mt: 3 }}>
+                <SocialLinks color={palette.ivoryMuted} size={20} gap={1.8} />
+              </Box>
+            </Box>
+          </Reveal>
         </Box>
 
-        {/* Bottom bar */}
+        <ParallaxFrame speed={-0.045} maxOffset={42}>
+          <Box
+            aria-hidden
+            sx={{
+              fontFamily: '"Cormorant Garamond", serif',
+              fontWeight: 600,
+              textAlign: 'center',
+              lineHeight: 0.82,
+              fontSize: 'clamp(3.25rem, 15vw, 15rem)',
+              letterSpacing: '0.05em',
+              color: palette.ghost,
+              userSelect: 'none',
+              pointerEvents: 'none',
+              mt: { xs: 2, md: 3 },
+              mb: { xs: -0.5, md: -2.5 },
+            }}
+          >
+            OBK MEDIA
+          </Box>
+        </ParallaxFrame>
+
         <Box
           sx={{
             borderTop: `1px solid ${palette.inkBorder}`,
@@ -247,11 +421,19 @@ export default function Footer() {
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
             <CopyrightOutlinedIcon sx={{ fontSize: '0.95rem', color: palette.ivoryMuted }} />
             <Typography variant="caption" sx={{ color: palette.ivoryMuted }}>
-              {new Date().getFullYear()} {BRAND.name}. {t('footer.rights')}
+              {new Date().getFullYear()} {brand.name}. {t('footer.rights')}
             </Typography>
           </Box>
           <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            <Typography variant="caption" sx={{ color: palette.ivoryMuted, fontStyle: 'italic', fontFamily: '"Cormorant Garamond", serif', fontSize: '0.95rem' }}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: palette.ivoryMuted,
+                fontStyle: 'italic',
+                fontFamily: '"Cormorant Garamond", serif',
+                fontSize: '0.95rem',
+              }}
+            >
               {t('footer.masterTouch')}
             </Typography>
             <IconButton
