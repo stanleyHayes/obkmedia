@@ -1,0 +1,25 @@
+name: Keep Render backend warm
+
+# Render's free tier sleeps after ~15 min of no traffic, causing a ~20-30s
+# cold start on the next request (and risking crawler timeouts). This pings
+# the health endpoint every 12 minutes to keep it awake.
+#
+# Notes:
+# - GitHub schedules run in UTC and may be delayed during peak load.
+# - Scheduled workflows are auto-disabled after 60 days of no repo activity.
+# - Remove this workflow if you move the backend off the free tier.
+
+on:
+  schedule:
+    - cron: '*/12 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping API health endpoint
+        run: |
+          curl -fsS --max-time 60 https://obkmedia-api.onrender.com/api/health \
+            && echo "backend is awake" \
+            || echo "ping failed (cold start or downtime) — non-fatal"
