@@ -20,8 +20,9 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string): vo
 
 const DEFAULT_DESCRIPTION = `${BRAND.intro} ${BRAND.seoKeyword} and nationwide coverage.`;
 
-// 1200×630 branded social-share card (matches the static default in index.html).
-const DEFAULT_OG_IMAGE = 'https://obkmedia.com/og-cover.jpg';
+// 1200×630 branded social-share card on Cloudinary (domain-independent so
+// crawlers can always fetch it). Matches the static default in index.html.
+const DEFAULT_OG_IMAGE = 'https://res.cloudinary.com/dvoqbonr2/image/upload/obkmedia/og-card.jpg';
 
 export default function Seo({ title, description, image, type = 'website' }: SeoProps) {
   useEffect(() => {
