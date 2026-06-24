@@ -20,9 +20,8 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string): vo
 
 const DEFAULT_DESCRIPTION = `${BRAND.intro} ${BRAND.seoKeyword} and nationwide coverage.`;
 
-// 1200×630 social-share image (matches the static default in index.html).
-const DEFAULT_OG_IMAGE =
-  'https://res.cloudinary.com/dvoqbonr2/image/upload/c_fill,g_auto,w_1200,h_630,f_jpg,q_auto/v1/obkmedia/portfolio/IMG_5650';
+// 1200×630 branded social-share card (matches the static default in index.html).
+const DEFAULT_OG_IMAGE = 'https://obkmedia.com/og-cover.jpg';
 
 export default function Seo({ title, description, image, type = 'website' }: SeoProps) {
   useEffect(() => {

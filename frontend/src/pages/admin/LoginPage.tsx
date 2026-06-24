@@ -19,7 +19,7 @@ import { landingFor } from '../../admin/landingPages';
 import { adminApi } from '../../api/admin';
 import { ApiError } from '../../api/client';
 import { useAuth } from '../../auth/AuthContext';
-import BrandLogo from '../../components/BrandLogo';
+import ObkLogo from '../../components/ObkLogo';
 import ThemeToggle from '../../components/ThemeToggle';
 import { BRAND } from '../../content';
 import Seo from '../../seo/Seo';
@@ -106,7 +106,12 @@ export default function LoginPage() {
           }}
         >
           <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 2, mb: { xs: 6, md: 8 } }}>
-            <BrandLogo suffix="ADMIN" animated subtitle="Secure workspace" sx={{ width: { xs: 210, sm: 238 } }} />
+            <Stack direction="row" spacing={1.4} sx={{ alignItems: 'center' }}>
+              <ObkLogo sx={{ height: { xs: 36, sm: 42 } }} />
+              <Typography sx={{ color: palette.ivoryMuted, fontWeight: 600, letterSpacing: '0.3em', fontSize: '0.74rem' }}>
+                ADMIN
+              </Typography>
+            </Stack>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <ThemeToggle />
               <Button

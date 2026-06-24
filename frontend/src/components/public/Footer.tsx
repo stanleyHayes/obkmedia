@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useBrand } from '../../SiteSettingsContext';
 import { palette } from '../../theme';
+import ObkLogo from '../ObkLogo';
 import ParallaxFrame from '../ParallaxFrame';
 import Reveal from '../Reveal';
 import SocialLinks from './SocialLinks';
@@ -291,12 +292,7 @@ export default function Footer() {
         >
           <Reveal variant="soft">
             <Box sx={{ maxWidth: 470 }}>
-              <Typography variant="h4" sx={{ letterSpacing: '0.08em', mb: 2 }}>
-                OBK{' '}
-                <Box component="span" sx={{ fontStyle: 'italic', color: palette.rose }}>
-                  MEDIA
-                </Box>
-              </Typography>
+              <ObkLogo sx={{ height: { xs: 46, md: 54 }, mb: 2.5 }} />
               <Typography variant="body2" sx={{ color: palette.ivoryMuted, mb: 3 }}>
                 {brand.intro}
               </Typography>

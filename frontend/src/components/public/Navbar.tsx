@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { useBrand } from '../../SiteSettingsContext';
 import { onDark, palette } from '../../theme';
-import BrandLogo from '../BrandLogo';
+import ObkLogo from '../ObkLogo';
 import LanguageSwitcher from '../LanguageSwitcher';
 import SocialLinks from './SocialLinks';
 import ThemeToggle from '../ThemeToggle';
@@ -243,15 +243,16 @@ export default function Navbar() {
                 minWidth: { md: 255 },
               }}
             >
-              <BrandLogo
-                animated={!scrolled}
-                imageUrl={brand.logoUrl}
-                subtitle={brand.tagline}
-                textColor={navText}
-                accentColor={navRose}
-                mutedColor={navMuted}
-                sx={{ width: { xs: 178, sm: 246, md: 258 } }}
-              />
+              {brand.logoUrl ? (
+                <Box
+                  component="img"
+                  src={brand.logoUrl}
+                  alt={brand.name}
+                  sx={{ height: { xs: 32, md: 42 }, width: 'auto', display: 'block' }}
+                />
+              ) : (
+                <ObkLogo onDark={overDark} sx={{ height: { xs: 32, md: 42 } }} />
+              )}
             </Box>
 
             <Stack

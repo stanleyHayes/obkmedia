@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { BRAND } from '../content';
 import { palette } from '../theme';
-import BrandLogo from './BrandLogo';
+import ObkLogo from './ObkLogo';
 
 interface SplashScreenProps {
   /** When false, renders inline (fills its parent) instead of full-viewport. */
@@ -76,14 +76,20 @@ export default function SplashScreen({ fullscreen = true }: SplashScreenProps) {
           animation: 'obk-3d-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
         }}
       >
-        <BrandLogo
-          animated
-          subtitle={BRAND.tagline}
-          sx={{
-            width: { xs: 'min(100%, 330px)', sm: 'min(100%, 410px)', md: 'min(100%, 470px)' },
-            filter: 'drop-shadow(0 28px 70px rgba(11, 7, 9, 0.32))',
-          }}
-        />
+        <Box sx={{ display: 'grid', justifyItems: 'center', gap: 1.75 }}>
+          <ObkLogo
+            sx={{
+              height: { xs: 92, sm: 112, md: 128 },
+              filter: 'drop-shadow(0 28px 70px rgba(11, 7, 9, 0.32))',
+            }}
+          />
+          <Typography
+            variant="overline"
+            sx={{ color: palette.rose, letterSpacing: '0.32em', fontSize: '0.72rem' }}
+          >
+            {BRAND.tagline}
+          </Typography>
+        </Box>
 
         <Box sx={{ width: 'min(100%, 320px)', mt: 1.5 }}>
           <Box

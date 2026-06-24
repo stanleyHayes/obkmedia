@@ -45,7 +45,7 @@ import { Link as RouterLink, Navigate, Outlet, useLocation, useNavigate } from '
 import { useNotifications } from '../admin/NotificationsContext';
 import type { Permission } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
-import BrandLogo from '../components/BrandLogo';
+import ObkLogo from '../components/ObkLogo';
 import NotificationBell from '../components/admin/NotificationBell';
 import SplashScreen from '../components/SplashScreen';
 import ThemeToggle from '../components/ThemeToggle';
@@ -522,9 +522,17 @@ export default function AdminLayout() {
         }}
       >
         {isRail ? (
-          <BrandLogo variant="mark" animated sx={{ width: 44 }} />
+          <ObkLogo sx={{ height: 26 }} />
         ) : (
-          <BrandLogo suffix="ADMIN" animated subtitle="Admin workspace" sx={{ width: 178 }} />
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+            <ObkLogo sx={{ height: 30 }} />
+            <Typography
+              component="span"
+              sx={{ color: palette.ivoryMuted, fontWeight: 600, letterSpacing: '0.26em', fontSize: '0.64rem' }}
+            >
+              ADMIN
+            </Typography>
+          </Box>
         )}
         <Tooltip title={isRail ? 'Expand sidebar' : 'Collapse sidebar'} placement="right">
           <IconButton

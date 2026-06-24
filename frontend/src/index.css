@@ -13,6 +13,19 @@
   --obk-scrim: rgba(11, 7, 9, 0.9);
 }
 
+/* Real OBK logo — theme-adaptive fills (see components/ObkLogo.tsx).
+   The aperture flips ink<->ivory so it stays visible on both themes;
+   the wine brightens slightly on dark for contrast. */
+:root,
+[data-theme='dark'] {
+  --obk-logo-aperture: #f4ede7;
+  --obk-logo-wine: #8e1b63;
+}
+[data-theme='light'] {
+  --obk-logo-aperture: #1f1216;
+  --obk-logo-wine: #5f053a;
+}
+
 html {
   scroll-behavior: smooth;
 }
