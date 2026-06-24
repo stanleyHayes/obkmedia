@@ -3,15 +3,14 @@ import { Route, Routes } from 'react-router-dom';
 import SplashScreen from './components/SplashScreen';
 import PublicLayout from './layouts/PublicLayout';
 import HomePage from './pages/HomePage';
-import LegalPage from './pages/LegalPage';
-import NotFoundPage from './pages/NotFoundPage';
-import PortfolioDetailPage from './pages/PortfolioDetailPage';
-import PortfolioPage from './pages/PortfolioPage';
 
-/**
- * The admin dashboard is a fully separate route tree, lazy-loaded so the
- * public marketing site never ships any admin code to visitors.
- */
+// HomePage stays eager (it's the landing page / LCP). The other public pages
+// and the whole admin tree are split into their own chunks so the homepage
+// doesn't ship code visitors may never reach.
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
+const PortfolioDetailPage = lazy(() => import('./pages/PortfolioDetailPage'));
+const LegalPage = lazy(() => import('./pages/LegalPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AdminApp = lazy(() => import('./AdminApp'));
 
 export default function App() {

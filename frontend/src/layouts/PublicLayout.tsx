@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/public/Footer';
 import Navbar from '../components/public/Navbar';
@@ -10,7 +11,10 @@ export default function PublicLayout() {
     <Box className="obk-grain" sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <Box component="main" sx={{ flex: 1 }}>
-        <Outlet />
+        {/* Boundary for lazy-loaded public pages; navbar/footer stay mounted. */}
+        <Suspense fallback={<Box sx={{ minHeight: '70vh' }} />}>
+          <Outlet />
+        </Suspense>
       </Box>
       <Footer />
       <WhatsAppFab />
